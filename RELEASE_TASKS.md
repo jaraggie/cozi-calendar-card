@@ -15,6 +15,7 @@ Target: a generic, independently maintained Cozi Family Calendar Card, ready for
 
 - [x] R6 — Create the public GitHub repository with description, topics, and Issues enabled; confirm the publishing account. Published repository: https://github.com/jaraggie/cozi-calendar-card (owner: jaraggie). Private vulnerability reporting is enabled.
 - [ ] R7 — Run hosted CI/HACS validation and publish a versioned GitHub release containing the JavaScript resource.
+  - Hosted [Validate run](https://github.com/jaraggie/cozi-calendar-card/actions/runs/41916218800) passed tests and HACS with no ignored checks. Release publication is in progress.
 - [ ] R8 — Verify HACS custom-repository installation and upgrade in Home Assistant without loading duplicate resources.
 - [ ] R9 — Post the reviewed announcement to the Home Assistant Community forum; collect initial feedback through GitHub Issues.
 - [ ] R10 — After beta feedback, submit the repository for default-catalog inclusion.
@@ -23,4 +24,4 @@ Local preparation does not establish a successful hosted HACS validation, HACS i
 
 Prepared candidate: **0.1.1**. See `VALIDATION.md` for local evidence and `CONTRIBUTING.md` for the draft-release process. Release publication, installation verification, announcement, and catalog submission remain open.
 
-Distribution work started: GitHub CLI is authorized, the public repository is created, and the package checks pass. The source upload and hosted checks are in progress.
+Distribution work started: GitHub CLI is authorized, the public source is uploaded, and hosted validation passes. The first beta release is in progress. Installation testing is awaiting restoration of UI access after `cgWindowNotFound` errors; no HA resources have been changed.

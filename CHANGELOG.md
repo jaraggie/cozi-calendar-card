@@ -1,8 +1,8 @@
 # Changelog
 
-## 0.1.1 — unreleased
+## 0.1.1 — 2026-11-04
 
-First community beta prepared for publication. Version 0.1.0 was a development build and is not the public release candidate.
+First community beta. Version 0.1.0 was a development build and is not a public release.
 
 - Read one combined Cozi family calendar through Home Assistant's calendar event API.
 - Show month and agenda views, configurable attendees, aliases, person colors, and shared/family labels.

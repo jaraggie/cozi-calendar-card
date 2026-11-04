@@ -33,9 +33,11 @@ The MIT license, HACS manifest, contribution/issue templates, changelog, and ann
 
 ## Checks still required before broad release
 
-- Hosted CI and HACS plugin validation against the actual public GitHub repository.
+- Hosted CI and HACS plugin validation passed on the public source commit `014208009128fc9c379202963bf5a49001521ed7`: [Validate run](https://github.com/jaraggie/cozi-calendar-card/actions/runs/41916218800). Both the tests and HACS jobs succeeded; the HACS action has no ignored checks. Tag-specific release workflow validation is recorded separately when it completes.
 - Clean HACS custom-repository installation, resource registration, frontend reload, and card-picker discovery.
 - Upgrade between two releases with no duplicate manual resource loaded.
 - Recheck on a physical phone and with another household's configured names and feed formatting.
 
 Track progress in [`RELEASE_TASKS.md`](RELEASE_TASKS.md). Record the tested HA/frontend versions and release tag with each installation result.
+
+The target HA instance exposes the built-in Marketplace and its Add from link dialog. Before installing the public card, the UI automation connection failed with `cgWindowNotFound` for both HA and Safari, including after reconnect/reset attempts. No Marketplace installation or resource migration has been performed yet. This is a UI access failure, not a failed card installation.
