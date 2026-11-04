@@ -1,0 +1,16 @@
+name: Feature request
+description: Suggest an improvement to the family calendar card.
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What would this help you do?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Proposed behavior and alternatives
+      description: Use fictional calendar examples.
+    validations:
+      required: true

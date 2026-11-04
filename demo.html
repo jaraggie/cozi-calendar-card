@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cozi Family Calendar — local demo</title>
+<style>
+body{margin:0;padding:30px;background:#f1f5f7;font:15px system-ui;color:#24323c;--primary-color:#087e91;--primary-text-color:#24323c;--secondary-text-color:#657580;--card-background-color:#fff;--divider-color:#dce3e8}
+body.dark{background:#151c23;--primary-color:#66bac6;--primary-text-color:#e8eef3;--secondary-text-color:#a6b6c3;--card-background-color:#202a33;--divider-color:#3b4854;color:#e8eef3}
+main{max-width:1280px;margin:auto}.demo-controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}.demo-controls p{margin:0 auto 0 0}.demo-controls button{padding:9px;border:1px solid #789;border-radius:8px;background:transparent;color:inherit;cursor:pointer}#frame{margin:auto}.narrow{max-width:390px}.note{font-size:12px;color:var(--secondary-text-color);margin-top:18px}#editor{max-width:600px;margin:20px auto;padding:20px;background:var(--card-background-color);border-radius:16px}
+</style>
+<main><div class="demo-controls"><p><strong>Cozi Family Calendar</strong> · local demo</p><button id="theme">Toggle dark theme</button><button id="width">Toggle phone width</button><button id="error">Simulate API error</button><button id="settings">Toggle editor</button></div><div id="editor" hidden><cozi-calendar-card-editor></cozi-calendar-card-editor></div><div id="frame"><cozi-calendar-card></cozi-calendar-card></div><p class="note">Fictional sample events. This page does not connect to Home Assistant or Cozi.</p></main>
+<script type="module">
+import {dateKeyAt,addDays,zonedEpoch} from './cozi-calendar-card.js';
+const demoOptions=new URLSearchParams(location.search);
+if(demoOptions.has('narrow'))document.querySelector('#frame').classList.add('narrow');
+if(demoOptions.has('dark'))document.body.classList.add('dark');
+if(demoOptions.has('showcase')){const style=document.createElement('style');style.textContent='.demo-controls,.note{display:none}';document.head.append(style);}
+const zone='America/Chicago', today=dateKeyAt(Date.now(),zone), card=document.querySelector('cozi-calendar-card');
+const timed=(day,hour,title,minutes=60)=>({summary:title,start:new Date(zonedEpoch(day,hour,0,0,zone)).toISOString(),end:new Date(zonedEpoch(day,hour,minutes%60,0,zone)+(Math.floor(minutes/60))*3600000).toISOString(),location:'Example venue',description:'A fictional event for checking the card layout.\nNo private calendar data is stored in this demo.'});
+const members=[{name:'Alex',aliases:['Lex'],color:'#4267d5'},{name:'Jordan',aliases:[],color:'#d54e45'},{name:'Sam',aliases:[],color:'#227da5'}];
+const events=[];
+for(let i=-10;i<40;i++){const day=addDays(today,i);events.push(timed(day,8,'All: Family breakfast',30));if(i%2===0)events.push(timed(day,10,'Alex: Dentist appointment'));if(i%3===0)events.push(timed(day,15,'Jordan/Sam: Library visit'));if(i%4===0)events.push(timed(day,17,'Sam: Evening walk'));}
+events.push({summary:'All: Example weekend away',start:{date:addDays(today,2)},end:{date:addDays(today,5)}});
+events.push(timed(today,12,'Alex/Jordan/Casey: Community garden'));
+events.push(timed(today,14,'Project: Unrecognized prefix stays readable'));
+events.push(timed(addDays(today,1),11,'Lex: Art class'));
+if(demoOptions.has('stress'))events.push(timed(today,13,'Alex: <img src=x onerror=alert(1)> text stays text'));
+events.push(timed(today,16,'Sam: A very long event title that should remain readable in the agenda and details dialog'));
+let fail=false;
+const hass={config:{time_zone:zone},locale:{language:'en-US'},states:{'calendar.demo_cozi':{entity_id:'calendar.demo_cozi',state:'off',attributes:{friendly_name:'Example family feed'}}},async callApi(method,path){if(method!=='GET'||!path.startsWith('calendars/'))throw Error('Unexpected request');await new Promise((r)=>setTimeout(r,80));if(fail)throw Error('Simulated error');const params=new URLSearchParams(path.split('?')[1]),start=Date.parse(params.get('start')),end=Date.parse(params.get('end'));return events.filter((e)=>{const s=typeof e.start==='object'?zonedEpoch(e.start.date,0,0,0,zone):Date.parse(e.start),t=typeof e.end==='object'?zonedEpoch(e.end.date,0,0,0,zone):Date.parse(e.end);return s<end&&t>start;});}};
+card.setConfig({type:'custom:cozi-calendar-card',entity:'calendar.demo_cozi',title:'Our family',max_events_per_day:demoOptions.has('showcase')?2:4,members});card.hass=hass;
+const editor=document.querySelector('cozi-calendar-card-editor');
+editor.setConfig({type:'custom:cozi-calendar-card',entity:'calendar.demo_cozi',title:'Our family',max_events_per_day:demoOptions.has('showcase')?2:4,members});editor.hass=hass;
+editor.addEventListener('config-changed',(event)=>{try{card.setConfig(event.detail.config);}catch(error){console.error(error.message);}});
+document.querySelector('#settings').onclick=()=>{document.querySelector('#editor').hidden=!document.querySelector('#editor').hidden;};
+document.querySelector('#theme').onclick=()=>document.body.classList.toggle('dark');
+document.querySelector('#width').onclick=()=>document.querySelector('#frame').classList.toggle('narrow');
+document.querySelector('#error').onclick=(e)=>{fail=!fail;e.target.textContent=fail?'Restore API':'Simulate API error';card._load(true);};
+window.demoCard=card;
+</script></html>

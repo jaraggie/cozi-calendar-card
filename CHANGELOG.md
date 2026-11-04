@@ -1,0 +1,15 @@
+# Changelog
+
+## 0.1.1 — unreleased
+
+First community beta prepared for publication. Version 0.1.0 was a development build and is not the public release candidate.
+
+- Read one combined Cozi family calendar through Home Assistant's calendar event API.
+- Show month and agenda views, configurable attendees, aliases, person colors, and shared/family labels.
+- Filter individual, shared, family-wide, and unassigned events without duplicating a shared appointment for every attendee.
+- Show plain-text event details and handle all-day, multi-day, and time-zone boundaries.
+- Provide a visual configuration editor and a fictional local demo.
+- Package a standalone JavaScript module for manual and HACS custom-repository installation.
+- Use generic configuration rather than assuming a household roster.
+
+Hosted validation, HACS installation/upgrade, and publication are tracked separately in the release task list.

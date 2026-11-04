@@ -1,0 +1,20 @@
+# Fictional examples. Replace the entity and members with your own configuration.
+type: custom:cozi-calendar-card
+entity: calendar.family_cozi
+title: Family calendar
+initial_view: month
+days_to_show: 7
+max_events_per_day: 4
+start_of_week: 0
+strip_prefix: true
+show_attendees: true
+family_color: "#427f73"
+shared_color: "#71618f"
+members:
+  - name: Alex
+    aliases: [Al]
+    color: "#4267d5"
+  - name: Jordan
+    color: "#ad7100"
+  - name: Sam
+    color: "#16806d"

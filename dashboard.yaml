@@ -1,0 +1,20 @@
+# Example full-width dashboard. Replace the fictional entity and member names.
+views:
+  - title: Family
+    path: family
+    type: panel
+    cards:
+      - type: custom:cozi-calendar-card
+        entity: calendar.family_cozi
+        title: Family calendar
+        initial_view: month
+        days_to_show: 7
+        max_events_per_day: 4
+        members:
+          - name: Alex
+            aliases: [Al]
+            color: "#4267d5"
+          - name: Jordan
+            color: "#ad7100"
+          - name: Sam
+            color: "#16806d"

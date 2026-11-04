@@ -1,0 +1,15 @@
+{
+  "name": "cozi-calendar-card",
+  "version": "0.1.1",
+  "description": "A Home Assistant card for one combined Cozi family calendar with attendee colors and filters.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "check": "node --check cozi-calendar-card.js",
+    "release:check": "node scripts/check-release.mjs",
+    "package": "npm run check && npm test && npm run release:check && python3 scripts/package_release.py"
+  },
+  "engines": { "node": ">=20" }
+}
