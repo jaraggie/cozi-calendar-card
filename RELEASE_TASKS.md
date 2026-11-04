@@ -21,8 +21,10 @@ Target: a generic, independently maintained Cozi Family Calendar Card, ready for
 
 Local preparation does not establish a successful hosted HACS validation, HACS installation, publication, or catalog acceptance. Update each task only after its corresponding evidence exists.
 
-Published beta: **0.1.2** ([Forest Calendar branding release](https://github.com/jaraggie/cozi-calendar-card/releases/tag/v0.1.2)). See `VALIDATION.md` for evidence and `CONTRIBUTING.md` for the draft-release process. Installation verification, announcement, and catalog submission remain open.
+Published beta: **0.1.3** ([Marketplace image fix](https://github.com/jaraggie/cozi-calendar-card/releases/tag/v0.1.3)). See `VALIDATION.md` for evidence and `CONTRIBUTING.md` for the draft-release process. Installation verification, announcement, and catalog submission remain open.
 
 Branding update: option A (Forest Calendar) is the selected project icon, promoted from prototype commit `8fbd376`. Published version **0.1.2** packages its SVG/PNG assets and README branding for GitHub and HACS repository details. GitHub’s custom social preview is saved. Hosted CI/HACS validation and the tag-specific release workflow passed; downloaded release checksums and all 32 archive files match the tag. Current HACS/Marketplace browse lists use a generic Dashboard category symbol; see `assets/README.md` for the verified source limitation.
 
 UI access recovered after the earlier `cgWindowNotFound` errors. Marketplace accepted the public repository through Add from link; installation and resource migration remain pending. No HA resources have been changed. Before replacing the development resource, preserve explicit household members, verify a single managed resource, then reload and check live events. Both v0.1.1 and v0.1.2 are now available for a public-release upgrade test; no upgrade result has been claimed.
+
+Marketplace image display is verified: v0.1.3 uses absolute pinned image URLs because the HA Markdown sanitizer stripped relative sources. After Refresh information, the live repository page displays the project icon and both screenshots. Hosted CI/HACS validation and release checks pass; downloaded assets match the tag. R8 remains open because this is a repository-page check, not a card installation/upgrade test.
