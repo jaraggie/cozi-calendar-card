@@ -27,9 +27,16 @@ const readme = await read("README.md");
 const images = [...readme.matchAll(/!\[[^\]]*\]\(([^)]+)\)/gu)].map((m) => m[1]);
 assert.ok(images.length > 0, "Public README needs screenshots");
 for (const image of images) {
-  assert.ok(!/^(?:https?:|data:)/iu.test(image), "Keep release screenshots in the repository");
-  assert.ok(!image.includes(".."), "Screenshot path must stay within repository");
-  await access(path.join(root, image));
+  // Marketplace sanitizes relative src values before its repository URL resolver runs.
+  // Keep images in this repository, but link to their immutable published versions.
+  const url = new URL(image);
+  assert.equal(url.protocol, "https:", "Marketplace images need absolute HTTPS URLs");
+  assert.equal(url.hostname, "raw.githubusercontent.com");
+  assert.equal(url.search + url.hash, "");
+  const match = url.pathname.match(/^\/jaraggie\/cozi-calendar-card\/(?:v\d+\.\d+\.\d+|[a-f0-9]{40})\/(.+)$/u);
+  assert.ok(match, "README images must use a pinned version of this repository");
+  assert.ok(!match[1].includes(".."), "Screenshot path must stay within repository");
+  await access(path.join(root, match[1]));
 }
 
 // This is a bounded release hygiene check, not a replacement for a human privacy review.

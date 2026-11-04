@@ -1,5 +1,5 @@
 /* Cozi Family Calendar Card — independent community implementation. No external dependencies. */
-export const VERSION = "0.1.2";
+export const VERSION = "0.1.3";
 // People are explicit configuration: never assume a household or infer names from arbitrary titles.
 export const DEFAULT_MEMBERS = Object.freeze([]);
 const key = (s) => String(s).normalize("NFKC").trim().replace(/\s+/gu, " ").toLocaleLowerCase("en");

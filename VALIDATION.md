@@ -63,3 +63,10 @@ HACS and Marketplace source inspection confirms that dashboard-plugin browse ico
 - Published JavaScript: 35,634 bytes; SHA-256 `22647b72f0b86905feba6bdaad4c189721394fa0ce5864e06ffad7f6f5b00b44`. Source ZIP SHA-256: `983a47d8dc5c6427a9374eff51489c94904b83225b67d8d5c32a36d3360427dc`.
 - The README displays the selected icon. The GitHub social preview was uploaded, visually inspected, and confirmed by `usesCustomOpenGraphImage: true`.
 - No claim is made of a custom HACS browse-list icon, Marketplace installation, or upgrade verification.
+
+
+## Marketplace README image fix — 2026-11-04
+
+The live repository page showed revision `500d4f2`, broken screenshot placeholders, and document links ending at the revision directory. Executed the instance's deployed Markdown worker in a temporary Node VM harness: all three relative image paths became `<img src ...>` before Marketplace's repository URL resolver ran. This reproduced the missing-source failure. After changing the README to absolute HTTPS URLs pinned to existing v0.1.2 image assets, the same worker preserves all three image sources. README document links now use absolute GitHub URLs as well.
+
+Candidate v0.1.3 passes `npm run package` (19 tests, release hygiene, packaging). The release guard now requires pinned raw GitHub image URLs belonging to this repository and corresponding local asset files. Calendar behavior and configuration are unchanged. Hosted publication and live-page refresh verification are pending.

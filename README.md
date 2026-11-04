@@ -1,12 +1,12 @@
-![Cozi Family Calendar Card icon](assets/icon-128.png)
+![Cozi Family Calendar Card icon](https://raw.githubusercontent.com/jaraggie/cozi-calendar-card/v0.1.2/assets/icon-128.png)
 
 # Cozi Family Calendar Card
 
 An independent, read-only Home Assistant dashboard card for **one combined Cozi family calendar**. It turns attendee prefixes into configurable person colors and labels, so a shared appointment appears once with everyone involved.
 
-![Month view with fictional family events](docs/images/month.png)
+![Month view with fictional family events](https://raw.githubusercontent.com/jaraggie/cozi-calendar-card/v0.1.2/docs/images/month.png)
 
-![Agenda view with fictional family events](docs/images/agenda.png)
+![Agenda view with fictional family events](https://raw.githubusercontent.com/jaraggie/cozi-calendar-card/v0.1.2/docs/images/agenda.png)
 
 This is an original community project, unaffiliated with Cozi or Home Assistant. It has no external JavaScript dependencies, build step, telemetry, or separate Cozi login. The card reads events from an existing Home Assistant calendar entity; it does not edit events or contact Cozi directly.
 
@@ -54,11 +54,11 @@ These steps follow [HACS custom repository instructions](https://hacs.dev/docs/f
 
 1. Download `cozi-calendar-card.js` from a release and copy it to `/config/www/cozi-calendar-card.js`. Create `www` if needed. Only this JavaScript file is required on HA.
 2. Open your dashboard's **Resources** settings (enable Advanced Mode in your HA profile if needed).
-3. Add `/local/cozi-calendar-card.js?v=0.1.2` as a **JavaScript module**. For YAML-managed resources, use:
+3. Add `/local/cozi-calendar-card.js?v=0.1.3` as a **JavaScript module**. For YAML-managed resources, use:
 
    ```yaml
    resources:
-     - url: /local/cozi-calendar-card.js?v=0.1.2
+     - url: /local/cozi-calendar-card.js?v=0.1.3
        type: module
    ```
 
@@ -86,7 +86,7 @@ members:
     color: "#16806d"
 ```
 
-The names and entity above are fictional. With no configured members, family-wide prefixes are recognized and other titles stay intact; the card prompts you to add people. The card picker selects a uniquely identifiable Cozi family calendar when possible and leaves ambiguous selections for you to choose. See [`example.yaml`](example.yaml) for more options and [`dashboard.yaml`](dashboard.yaml) for a full-width Panel dashboard. Configure your members explicitly; the public card does not assume a household roster.
+The names and entity above are fictional. With no configured members, family-wide prefixes are recognized and other titles stay intact; the card prompts you to add people. The card picker selects a uniquely identifiable Cozi family calendar when possible and leaves ambiguous selections for you to choose. See [`example.yaml`](https://github.com/jaraggie/cozi-calendar-card/blob/main/example.yaml) for more options and [`dashboard.yaml`](https://github.com/jaraggie/cozi-calendar-card/blob/main/dashboard.yaml) for a full-width Panel dashboard. Configure your members explicitly; the public card does not assume a household roster.
 
 The visual editor handles the entity, title, starting view, agenda range, members, aliases, colors, and title/label options. Other options are available in YAML.
 
@@ -134,14 +134,14 @@ Use `demo.html?stress=1` to include HTML-looking event text for escaping checks.
 
 The JavaScript source is the deployable resource. After a manual update, replace the file, increment the resource URL's `?v=` value, and reload the frontend. A clean HACS installation and upgrade check is part of the release checklist.
 
-See [`VALIDATION.md`](VALIDATION.md) for evidence and limits, [`CONTRIBUTING.md`](CONTRIBUTING.md) for contribution guidance, and [`CHANGELOG.md`](CHANGELOG.md) for release notes. Report problems through the published repository's Issues tab with versions, sanitized configuration, and fictional reproductions. Never attach a private feed URL or an unredacted family calendar.
+See [`VALIDATION.md`](https://github.com/jaraggie/cozi-calendar-card/blob/main/VALIDATION.md) for evidence and limits, [`CONTRIBUTING.md`](https://github.com/jaraggie/cozi-calendar-card/blob/main/CONTRIBUTING.md) for contribution guidance, and [`CHANGELOG.md`](https://github.com/jaraggie/cozi-calendar-card/blob/main/CHANGELOG.md) for release notes. Report problems through the published repository's Issues tab with versions, sanitized configuration, and fictional reproductions. Never attach a private feed URL or an unredacted family calendar.
 
 ## License
 
-[MIT](LICENSE). Cozi is a trademark of its respective owner. This community card is not an official Cozi product.
+[MIT](https://github.com/jaraggie/cozi-calendar-card/blob/main/LICENSE). Cozi is a trademark of its respective owner. This community card is not an official Cozi product.
 
 ## Project icon
 
-The dark green **Forest Calendar** is this project's original icon. [SVG](assets/icon.svg) · [512px PNG](assets/icon.png). See [branding notes](assets/README.md) for usage and HACS visibility. The README icon is shown on GitHub and on repository detail pages that render it.
+The dark green **Forest Calendar** is this project's original icon. [SVG](https://github.com/jaraggie/cozi-calendar-card/blob/main/assets/icon.svg) · [512px PNG](https://github.com/jaraggie/cozi-calendar-card/blob/main/assets/icon.png). See [branding notes](https://github.com/jaraggie/cozi-calendar-card/blob/main/assets/README.md) for usage and HACS visibility. The README icon is shown on GitHub and on repository detail pages that render it.
 
 HACS and Home Assistant Marketplace currently use a generic Dashboard category symbol in browse lists for dashboard plugins. Their per-integration brand images do not apply to this card, and `hacs.json` has no supported dashboard icon field. The selected icon is therefore included prominently in this README.
