@@ -41,13 +41,12 @@ The MIT license, HACS manifest, contribution/issue templates, changelog, and ann
 
 ## Checks still required before broad release
 
-- Clean HACS custom-repository installation, resource registration, frontend reload, and card-picker discovery.
-- Upgrade between two releases with no duplicate manual resource loaded.
+- Installation and upgrade **0.1.1 → 0.1.3**, including removal of the old manual resource, are user-confirmed; see the installation evidence below. Exact HA/frontend build versions and individual card-picker/reload/live-event assertions were not separately recorded.
 - Recheck on a physical phone and with another household's configured names and feed formatting.
 
 Track progress in [`RELEASE_TASKS.md`](RELEASE_TASKS.md). Record the tested HA/frontend versions and release tag with each installation result.
 
-The target HA instance exposes the built-in Marketplace. After recovering from the earlier `cgWindowNotFound` UI access failures, Add from link accepted the public repository. No Marketplace installation or resource migration has been performed yet; repository registration alone does not establish a successful installation.
+The target HA instance exposes the built-in Marketplace. After recovering from the earlier `cgWindowNotFound` UI access failures, Add from link accepted the public repository. At that stage, repository registration alone did not establish a successful installation. The later user-run installation and upgrade results are recorded below.
 
 ## Selected icon — 2026-11-04
 
@@ -76,4 +75,6 @@ Candidate v0.1.3 passes `npm run package` (19 tests, release hygiene, packaging)
 
 The user reported: “I installed and then successfully was notified to upgrade, and just upgraded successfully.” This confirms the installation, update-notification, and upgrade workflow from the user's test. It is distinct from the agent's direct repository-page and automated checks.
 
-The exact source/target card versions, HA/frontend versions, resource list, and post-upgrade live-event checks were not provided in that report. Do not assume the target was v0.1.3 solely because it is the latest published beta. The remaining R8 evidence audit is to record the versions and confirm that only the managed resource is registered, with the old manual resource removed.
+The user then explicitly confirmed the tested card upgrade path as **0.1.1 → 0.1.3** and confirmed that the old manual resource was removed from Resources. R8 is complete based on these user-reported results.
+
+HA/frontend build versions were not supplied. The agent did not independently inspect the final resource list or separately verify post-upgrade live events; those details must not be inferred from the reported successful upgrade.

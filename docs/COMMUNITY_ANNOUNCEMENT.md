@@ -1,6 +1,6 @@
 # Community announcement draft
 
-Status: draft only. The beta is published, and the user has confirmed installation, update notification, and successful upgrade. The resource/version evidence audit and forum post remain pending. Review the recorded evidence before posting. This file is not evidence of a public announcement.
+Status: draft only. The beta is published, and the user has confirmed installation, update notification, successful upgrade **0.1.1 → 0.1.3**, and removal of the old manual resource. The forum post remains pending. Review the recorded evidence before posting. This file is not evidence of a public announcement.
 
 Suggested forum category: Home Assistant Community → Share your Projects → [Dashboards & Frontend](https://community.home-assistant.io/c/projects/frontend/34).
 
