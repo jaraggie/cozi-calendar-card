@@ -1,6 +1,6 @@
 # Community announcement draft
 
-Status: draft only. Replace the repository/release placeholders, confirm installation results, and review screenshots before posting. This file is not evidence of a public announcement.
+Status: draft only. The beta is published, but installation/upgrade testing and the forum post are still pending. Review and update the installation result before posting. This file is not evidence of a public announcement.
 
 Suggested forum category: Home Assistant Community → Share your Projects → [Dashboards & Frontend](https://community.home-assistant.io/c/projects/frontend/34).
 
@@ -24,10 +24,12 @@ This is an original MIT-licensed community project, unaffiliated with Cozi or Ho
 
 **Repository:** https://github.com/jaraggie/cozi-calendar-card
 
-**Installation:** [README](https://github.com/jaraggie/cozi-calendar-card#install). HACS installation uses a custom Dashboard repository; it is not yet in the default catalog. PUBLISHER: confirm the installation result before posting.
+**Beta release:** https://github.com/jaraggie/cozi-calendar-card/releases/tag/v0.1.1
 
-![Month view — fictional events](images/month.png)
+**Installation:** [README](https://github.com/jaraggie/cozi-calendar-card#install). Use a custom Dashboard repository in HACS, or Add from link in Home Assistant Marketplace. Enable pre-releases if the beta is not offered. The card is not yet in the default catalog. Installation and upgrade testing are still being completed for this initial beta.
 
-![Agenda view — fictional events](images/agenda.png)
+![Month view — fictional events](https://raw.githubusercontent.com/jaraggie/cozi-calendar-card/v0.1.1/docs/images/month.png)
+
+![Agenda view — fictional events](https://raw.githubusercontent.com/jaraggie/cozi-calendar-card/v0.1.1/docs/images/agenda.png)
 
 Please report bugs in the repository's Issues tab with HA/card versions and a fictional example that reproduces the issue. Keep calendar subscription URLs, tokens, and private event details out of posts and issue attachments.

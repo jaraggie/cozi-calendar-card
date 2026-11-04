@@ -14,14 +14,13 @@ Target: a generic, independently maintained Cozi Family Calendar Card, ready for
 ## Distribution
 
 - [x] R6 — Create the public GitHub repository with description, topics, and Issues enabled; confirm the publishing account. Published repository: https://github.com/jaraggie/cozi-calendar-card (owner: jaraggie). Private vulnerability reporting is enabled.
-- [ ] R7 — Run hosted CI/HACS validation and publish a versioned GitHub release containing the JavaScript resource.
-  - Hosted [Validate run](https://github.com/jaraggie/cozi-calendar-card/actions/runs/41916218800) passed tests and HACS with no ignored checks. Release publication is in progress.
+- [x] R7 — Run hosted CI/HACS validation and publish a versioned GitHub release containing the JavaScript resource. [v0.1.1 community beta](https://github.com/jaraggie/cozi-calendar-card/releases/tag/v0.1.1) is published with JavaScript, source ZIP, and checksums. [Candidate CI](https://github.com/jaraggie/cozi-calendar-card/actions/runs/41916931766) and [tag-specific release workflow](https://github.com/jaraggie/cozi-calendar-card/actions/runs/41917089425) passed with no ignored HACS checks. All three downloaded assets were verified against checksums and the tag.
 - [ ] R8 — Verify HACS custom-repository installation and upgrade in Home Assistant without loading duplicate resources.
-- [ ] R9 — Post the reviewed announcement to the Home Assistant Community forum; collect initial feedback through GitHub Issues.
-- [ ] R10 — After beta feedback, submit the repository for default-catalog inclusion.
+- [ ] R9 — Post the reviewed announcement to the Home Assistant Community forum; collect initial feedback through GitHub Issues. Draft has the published beta links and immutable screenshot URLs; it has not been posted.
+- [ ] R10 — After beta feedback, submit the repository for default-catalog inclusion. See `docs/CATALOG_SUBMISSION.md` for the submission draft and remaining gates.
 
 Local preparation does not establish a successful hosted HACS validation, HACS installation, publication, or catalog acceptance. Update each task only after its corresponding evidence exists.
 
-Prepared candidate: **0.1.1**. See `VALIDATION.md` for local evidence and `CONTRIBUTING.md` for the draft-release process. Release publication, installation verification, announcement, and catalog submission remain open.
+Published beta: **0.1.1**. See `VALIDATION.md` for evidence and `CONTRIBUTING.md` for the draft-release process. Installation verification, announcement, and catalog submission remain open.
 
-Distribution work started: GitHub CLI is authorized, the public source is uploaded, and hosted validation passes. The first beta release is in progress. Installation testing is awaiting restoration of UI access after `cgWindowNotFound` errors; no HA resources have been changed.
+Installation testing is awaiting restoration of UI access after `cgWindowNotFound` errors for both HA and Safari, including after reconnect/reset attempts. No HA resources have been changed. Once UI access returns, preserve explicit household members before replacing the development resource, verify a single managed resource, then reload and check live events. An upgrade between public releases also needs a subsequent release; no upgrade result has been claimed.
