@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Forest Calendar</title>
+  <desc id="desc">A warm ivory calendar with four date markers on a dark forest green rounded tile.</desc>
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="#123F35"/>
+  <rect x="120" y="144" width="272" height="260" rx="42" fill="#F5F3E9"/>
+  <path d="M192 112v62m128-62v62" fill="none" stroke="#F5F3E9" stroke-width="24" stroke-linecap="round"/>
+  <path d="M142 226h228" fill="none" stroke="#123F35" stroke-width="14"/>
+  <g fill="#123F35"><circle cx="208" cy="285" r="21"/><circle cx="304" cy="285" r="21"/><circle cx="208" cy="351" r="21"/></g>
+  <circle cx="304" cy="351" r="21" fill="#6B9A82"/>
+</svg>

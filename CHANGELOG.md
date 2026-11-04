@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2 — 2026-11-04
+
+- Adopt the selected Forest Calendar icon in dark green and ivory.
+- Add original SVG, transparent 512px/128px PNGs, and a GitHub social preview.
+- Show the icon at the top of the README for GitHub and HACS/Marketplace repository details.
+- Document the generic browse-list icon limitation for dashboard plugins.
+- Calendar behavior and configuration are unchanged.
+
 ## 0.1.1 — 2026-11-04
 
 First community beta. Version 0.1.0 was a development build and is not a public release.

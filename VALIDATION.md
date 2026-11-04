@@ -48,3 +48,9 @@ The MIT license, HACS manifest, contribution/issue templates, changelog, and ann
 Track progress in [`RELEASE_TASKS.md`](RELEASE_TASKS.md). Record the tested HA/frontend versions and release tag with each installation result.
 
 The target HA instance exposes the built-in Marketplace and its Add from link dialog. Before installing the public card, the UI automation connection failed with `cgWindowNotFound` for both HA and Safari, including after reconnect/reset attempts. No Marketplace installation or resource migration has been performed yet. This is a UI access failure, not a failed card installation.
+
+## Selected icon — 2026-11-04
+
+The user selected the dark green Forest Calendar concept. The production assets contain only that choice; the R monogram and comparison UI remain on the prototype branch. The 512px and 128px PNGs were rendered from the original SVG and have transparent corners. The icon and 1280px × 640px social preview were visually inspected. Local `npm run package` passes for 0.1.2, including 19 tests and release hygiene checks. Calendar behavior is unchanged.
+
+HACS and Marketplace source inspection confirms that dashboard-plugin browse icons are category symbols, while repository details render the README. The README now starts with the selected icon. This does not claim a customized browse-list icon or completed HACS installation. See the primary-source links in `assets/README.md`.

@@ -1,3 +1,5 @@
+![Cozi Family Calendar Card icon](assets/icon-128.png)
+
 # Cozi Family Calendar Card
 
 An independent, read-only Home Assistant dashboard card for **one combined Cozi family calendar**. It turns attendee prefixes into configurable person colors and labels, so a shared appointment appears once with everyone involved.
@@ -52,11 +54,11 @@ These steps follow [HACS custom repository instructions](https://hacs.dev/docs/f
 
 1. Download `cozi-calendar-card.js` from a release and copy it to `/config/www/cozi-calendar-card.js`. Create `www` if needed. Only this JavaScript file is required on HA.
 2. Open your dashboard's **Resources** settings (enable Advanced Mode in your HA profile if needed).
-3. Add `/local/cozi-calendar-card.js?v=0.1.1` as a **JavaScript module**. For YAML-managed resources, use:
+3. Add `/local/cozi-calendar-card.js?v=0.1.2` as a **JavaScript module**. For YAML-managed resources, use:
 
    ```yaml
    resources:
-     - url: /local/cozi-calendar-card.js?v=0.1.1
+     - url: /local/cozi-calendar-card.js?v=0.1.2
        type: module
    ```
 
@@ -137,3 +139,9 @@ See [`VALIDATION.md`](VALIDATION.md) for evidence and limits, [`CONTRIBUTING.md`
 ## License
 
 [MIT](LICENSE). Cozi is a trademark of its respective owner. This community card is not an official Cozi product.
+
+## Project icon
+
+The dark green **Forest Calendar** is this project's original icon. [SVG](assets/icon.svg) · [512px PNG](assets/icon.png). See [branding notes](assets/README.md) for usage and HACS visibility. The README icon is shown on GitHub and on repository detail pages that render it.
+
+HACS and Home Assistant Marketplace currently use a generic Dashboard category symbol in browse lists for dashboard plugins. Their per-integration brand images do not apply to this card, and `hacs.json` has no supported dashboard icon field. The selected icon is therefore included prominently in this README.

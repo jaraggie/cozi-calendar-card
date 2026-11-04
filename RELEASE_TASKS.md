@@ -23,4 +23,6 @@ Local preparation does not establish a successful hosted HACS validation, HACS i
 
 Published beta: **0.1.1**. See `VALIDATION.md` for evidence and `CONTRIBUTING.md` for the draft-release process. Installation verification, announcement, and catalog submission remain open.
 
+Branding update: option A (Forest Calendar) is the selected project icon, promoted from prototype commit `8fbd376`. Version **0.1.2** packages its SVG/PNG assets and README branding for GitHub and HACS repository details. Current HACS/Marketplace browse lists use a generic Dashboard category symbol; see `assets/README.md` for the verified source limitation.
+
 Installation testing is awaiting restoration of UI access after `cgWindowNotFound` errors for both HA and Safari, including after reconnect/reset attempts. No HA resources have been changed. Once UI access returns, preserve explicit household members before replacing the development resource, verify a single managed resource, then reload and check live events. An upgrade between public releases also needs a subsequent release; no upgrade result has been claimed.
