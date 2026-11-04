@@ -1,6 +1,6 @@
 # Community announcement draft
 
-Status: draft only. The beta is published, but installation/upgrade testing and the forum post are still pending. Review and update the installation result before posting. This file is not evidence of a public announcement.
+Status: draft only. The beta is published, and the user has confirmed installation, update notification, and successful upgrade. The resource/version evidence audit and forum post remain pending. Review the recorded evidence before posting. This file is not evidence of a public announcement.
 
 Suggested forum category: Home Assistant Community → Share your Projects → [Dashboards & Frontend](https://community.home-assistant.io/c/projects/frontend/34).
 
@@ -24,9 +24,9 @@ This is an original MIT-licensed community project, unaffiliated with Cozi or Ho
 
 **Repository:** https://github.com/jaraggie/cozi-calendar-card
 
-**Beta release:** https://github.com/jaraggie/cozi-calendar-card/releases/tag/v0.1.1
+**Beta release:** https://github.com/jaraggie/cozi-calendar-card/releases/tag/v0.1.3
 
-**Installation:** [README](https://github.com/jaraggie/cozi-calendar-card#install). Use a custom Dashboard repository in HACS, or Add from link in Home Assistant Marketplace. Enable pre-releases if the beta is not offered. The card is not yet in the default catalog. Installation and upgrade testing are still being completed for this initial beta.
+**Installation:** [README](https://github.com/jaraggie/cozi-calendar-card#install). Use a custom Dashboard repository in HACS, or Add from link in Home Assistant Marketplace. Enable pre-releases if the beta is not offered. The card is not yet in the default catalog. Installation, update notification, and upgrade have been successfully tested by the project owner; broader beta feedback is welcome.
 
 ![Month view — fictional events](https://raw.githubusercontent.com/jaraggie/cozi-calendar-card/v0.1.1/docs/images/month.png)
 

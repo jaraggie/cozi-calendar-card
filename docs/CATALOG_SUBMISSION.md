@@ -1,6 +1,6 @@
 # Default-catalog submission draft
 
-Not submitted. Complete installation/upgrade testing and gather beta feedback before opening the pull request. Re-read the current [publishing requirements](https://hacs.dev/docs/publish/start/) and [submission template](https://github.com/hacs/default/blob/master/.github/PULL_REQUEST_TEMPLATE.md) when submitting.
+Not submitted. The user has confirmed installation, upgrade notification, and successful upgrade. Finish the resource/version evidence audit and gather beta feedback before opening the pull request. Re-read the current [publishing requirements](https://hacs.dev/docs/publish/start/) and [submission template](https://github.com/hacs/default/blob/master/.github/PULL_REQUEST_TEMPLATE.md) when submitting.
 
 Repository entry: `jaraggie/cozi-calendar-card`, added in alphabetical order to the JSON list in [`hacs/default/plugin`](https://github.com/hacs/default/blob/master/plugin). Submit from the owner's personal fork with maintainer edits enabled.
 
@@ -15,7 +15,8 @@ Repository entry: `jaraggie/cozi-calendar-card`, added in alphabetical order to 
 
 ## Remaining gates
 
-- [ ] Verify custom-repository installation and a subsequent public-release upgrade in HA; record HA/frontend versions and one managed resource.
+- [x] User confirmed custom-repository installation, upgrade notification, and successful upgrade on 2026-11-04; exact release versions were not supplied.
+- [ ] Record tested card/HA/frontend versions and confirm one managed resource with the old manual resource removed.
 - [ ] Resolve beta feedback and decide which regular release to submit; replace the beta link with that release if applicable.
 - [ ] Refresh the official checklist, verify all statements against current evidence, and submit the repository entry.
 
