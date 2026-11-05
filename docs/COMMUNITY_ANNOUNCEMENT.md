@@ -1,6 +1,6 @@
 # Community announcement draft
 
-Status: draft only. The beta is published, and the user has confirmed installation, update notification, successful upgrade **0.1.1 → 0.1.3**, and removal of the old manual resource. The forum post remains pending. Review the recorded evidence before posting. This file is not evidence of a public announcement.
+Status: prepared for publication. Version 0.2.0 is published; Marketplace upgrade, one managed resource, and physical Fire TV presentation/rotation are verified. The forum post remains pending sign-in. This file alone is not evidence of a public announcement.
 
 Suggested forum category: Home Assistant Community → Share your Projects → [Dashboards & Frontend](https://community.home-assistant.io/c/projects/frontend/34).
 
@@ -12,21 +12,24 @@ I built an independent Home Assistant dashboard card for Cozi's combined family 
 
 It includes:
 
-- Month and agenda views, including a narrow-screen agenda.
+- Month, two-week, and agenda views, including a narrow-screen agenda.
 - Configurable names, aliases, and colors.
 - Person filters that retain shared and family-wide appointments.
 - Cleaned attendee prefixes and an event-details dialog.
 - A visual editor and YAML options.
+- Optional TV presentation with adjustable text, safe margins, compact controls, and browser fullscreen.
+- Automatic paging of overflowing days so a wall display can show appointments beyond “+ more.” Rotate today only or all overflowing days, with configurable timing and interaction pauses.
+- URL presentation parameters and a parameterized Android/Silk launcher example for HA scripts.
 
 The card reads an existing HA calendar entity. Add Cozi's **All** shared calendar through HA's Remote Calendar integration, then choose that entity and configure your members. It does not ask for a Cozi login, edit appointments, send telemetry, or contact Cozi directly.
 
-This is an original MIT-licensed community project, unaffiliated with Cozi or Home Assistant. The first release is a beta, and feedback on different feed formats, screen sizes, and time zones would be useful.
+This is an original MIT-licensed community project, unaffiliated with Cozi or Home Assistant. The current release is a beta, and feedback on different feed formats, screen sizes, and time zones would be useful.
 
 **Repository:** https://github.com/jaraggie/cozi-calendar-card
 
-**Beta release:** https://github.com/jaraggie/cozi-calendar-card/releases/tag/v0.1.3
+**Beta release:** https://github.com/jaraggie/cozi-calendar-card/releases/tag/v0.2.0
 
-**Installation:** [README](https://github.com/jaraggie/cozi-calendar-card#install). Use a custom Dashboard repository in HACS, or Add from link in Home Assistant Marketplace. Enable pre-releases if the beta is not offered. The card is not yet in the default catalog. Installation, update notification, and upgrade have been successfully tested by the project owner; broader beta feedback is welcome.
+**Installation:** [README](https://github.com/jaraggie/cozi-calendar-card#install). Use a custom Dashboard repository in HACS, or Add from link in Home Assistant Marketplace. Enable pre-releases if the beta is not offered. The card is not yet in the default catalog. The v0.2.0 Marketplace upgrade was verified on HA Core 2026.11.0 / Frontend 20261028.4, and TV fullscreen and all-days event rotation were checked on a physical Fire TV. Broader beta feedback is welcome.
 
 ![Month view — fictional events](https://raw.githubusercontent.com/jaraggie/cozi-calendar-card/v0.1.1/docs/images/month.png)
 
