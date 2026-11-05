@@ -17,18 +17,20 @@ Target: a generic, independently maintained Cozi Family Calendar Card, ready for
 - [x] R7 — Run hosted CI/HACS validation and publish a versioned GitHub release containing the JavaScript resource. [v0.1.1 community beta](https://github.com/jaraggie/cozi-calendar-card/releases/tag/v0.1.1) is published with JavaScript, source ZIP, and checksums. [Candidate CI](https://github.com/jaraggie/cozi-calendar-card/actions/runs/41916931766) and [tag-specific release workflow](https://github.com/jaraggie/cozi-calendar-card/actions/runs/41917089425) passed with no ignored HACS checks. All three downloaded assets were verified against checksums and the tag.
 - [x] R8 — User confirmed Marketplace installation of **0.1.1**, upgrade notification, successful upgrade to **0.1.3**, and removal of the old manual resource from Resources on 2026-11-04. HA/frontend build versions were not supplied; see `VALIDATION.md` for the evidence scope.
 - [x] R9 — Publish the owner-reviewed announcement to the Home Assistant Community forum. Moderation approved on 2026-11-05; the [public topic](https://community.home-assistant.io/t/cozi-family-calendar-card-one-family-feed-with-attendee-colors-and-shared-events/1032624) is verified. See `docs/COMMUNITY_ANNOUNCEMENT.md`.
-- [x] R10 — Submit the repository for default-catalog inclusion. Submitted [hacs/default #13407](https://github.com/hacs/default/pull/13407) from the owner's personal fork with one sorted plugin addition and maintainer edits enabled. Catalog review/acceptance remains external and pending; see `docs/CATALOG_SUBMISSION.md`.
+- [x] R10 — Submit the repository for default-catalog inclusion. [hacs/default #13407](https://github.com/hacs/default/pull/13407) was approved and merged on 2026-11-05; the upstream plugin list contains the card. See `docs/CATALOG_SUBMISSION.md` for evidence and propagation scope.
 
 Local preparation does not establish a successful hosted HACS validation, HACS installation, publication, or catalog acceptance. Update each task only after its corresponding evidence exists.
 
-Published regular release: **0.2.0** ([TV presentation and event rotation](https://github.com/jaraggie/cozi-calendar-card/releases/tag/v0.2.0)). Promoted from beta at the catalog maintainer's request, with owner approval, without changing the validated tag or assets. See `VALIDATION.md` for evidence and `CONTRIBUTING.md` for the draft-release process. The earlier user-confirmed upgrade path was **0.1.1 → 0.1.3**. The announcement is public; catalog submission #13407 remains subject to maintainer review.
+Published regular release: **0.2.0** ([TV presentation and event rotation](https://github.com/jaraggie/cozi-calendar-card/releases/tag/v0.2.0)). Promoted from beta at the catalog maintainer's request, with owner approval, without changing the validated tag or assets. See `VALIDATION.md` for evidence and `CONTRIBUTING.md` for the draft-release process. The earlier user-confirmed upgrade path was **0.1.1 → 0.1.3**. The announcement is public; catalog submission #13407 is approved and merged.
 
 External follow-up:
 
 - [x] Confirm forum moderation approval and record the public topic URL.
 - [ ] Collect community feedback through GitHub Issues.
 - [x] Address the maintainer's regular-release request and [reply with confirmation](https://github.com/hacs/default/pull/13407#issuecomment-6662199884); #13407 is ready for continued review.
-- [ ] Confirm catalog approval, merge, and inclusion after the catalog scan. Submission alone is not acceptance.
+- [x] Confirm catalog approval, merge, and the entry in the upstream plugin list.
+- [x] Update README installation guidance to lead with catalog search and retain custom repositories as a fallback; queued for the next release.
+- [ ] Verify search visibility after catalog propagation without relying on an existing custom repository registration.
 
 Branding update: option A (Forest Calendar) is the selected project icon, promoted from prototype commit `8fbd376`. Published version **0.1.2** packages its SVG/PNG assets and README branding for GitHub and HACS repository details. GitHub’s custom social preview is saved. Hosted CI/HACS validation and the tag-specific release workflow passed; downloaded release checksums and all 32 archive files match the tag. Current HACS/Marketplace browse lists use a generic Dashboard category symbol; see `assets/README.md` for the verified source limitation.
 

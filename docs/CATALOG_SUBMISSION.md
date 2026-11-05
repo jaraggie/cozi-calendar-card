@@ -1,6 +1,6 @@
 # Default-catalog submission
 
-Submitted on 2026-11-05: [hacs/default #13407](https://github.com/hacs/default/pull/13407). This requests inclusion; it does not establish catalog acceptance. Version 0.2.0 is now a full, non-prerelease release.
+Approved and merged on 2026-11-05: [hacs/default #13407](https://github.com/hacs/default/pull/13407). The default catalog's `plugin` list contains `jaraggie/cozi-calendar-card`. Version 0.2.0 is a full, non-prerelease release. Per-installation catalog propagation has not been independently verified.
 
 Repository entry: `jaraggie/cozi-calendar-card`, added in alphabetical order to the JSON list in [`hacs/default/plugin`](https://github.com/hacs/default/blob/master/plugin). Submitted from the owner's personal fork, branch `add-cozi-calendar-card`, with maintainer edits enabled. The verified diff contains one addition and no deletions in one file.
 
@@ -20,7 +20,9 @@ Repository entry: `jaraggie/cozi-calendar-card`, added in alphabetical order to 
 - [x] User requested submission of the current tested beta; its pre-release status is disclosed in the PR.
 - [x] Refresh the official checklist, verify all statements against current evidence, and submit the repository entry.
 - [x] Address the maintainer's request for a full release: v0.2.0 is no longer a prerelease and is returned by GitHub's latest-release endpoint. The release asset IDs, hashes, sizes, and tag are unchanged. README installation guidance no longer requires beta opt-in.
-- [ ] Catalog maintainers review and merge the submission; inclusion follows their scheduled scan.
+- [x] Catalog maintainer approved and merged the submission; the upstream plugin list contains the entry.
+- [x] Address the approval note: current README leads with search for Cozi Family Calendar Card and keeps custom repository steps as a fallback. This documentation change is queued for the next release.
+- [ ] Independently verify search visibility after catalog propagation on an installation without a pre-existing custom repository entry.
 
 The initial [#13404](https://github.com/hacs/default/pull/13404) was closed by the checklist bot because six items were checked. The [bot source](https://github.com/hacs/bot/blob/main/src/plugins/pull_request.opened.default.ts) requires exactly five checked items for a dashboard plugin and six for an integration. The replacement preserves the template's unchecked integration-only hassfest item and explains why it does not apply. Do not add a sixth checked N/A item.
 
@@ -28,4 +30,4 @@ Requirements checked against the [catalog guide](https://contributors.home-assis
 
 Maintainer feedback on 2026-11-05: publish a full non-prerelease release so default-store users can install without opting into beta versions. The owner approved promoting the tested 0.2.0, updating installation guidance, marking the PR ready, and replying. This promotion changes distribution metadata and notes; it does not claim additional endurance or phone testing.
 
-Follow-up completed: the PR description now identifies the regular release, #13407 is open and ready for review with the New default repository label, and the [reviewer confirmation](https://github.com/hacs/default/pull/13407#issuecomment-6662199884) links the regular release and explains that its tag/assets are unchanged. Final catalog approval and merge remain pending.
+Follow-up completed: the PR description identifies the regular release, and the [reviewer confirmation](https://github.com/hacs/default/pull/13407#issuecomment-6662199884) links it and explains that its tag/assets are unchanged. Frenck approved and merged #13407 at 15:46:07 UTC on 2026-11-05. The approval asks for search-first installation guidance in a future release; the README now provides it without changing 0.2.0's tag or assets.

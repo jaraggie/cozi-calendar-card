@@ -132,3 +132,9 @@ The owner confirmed forum moderation approval. Direct browser inspection verifie
 Catalog maintainer Frenck requested a full release because default-store users do not normally see prereleases. With explicit owner approval, promoted v0.2.0 to a regular latest release and removed beta wording from its title/notes and the current README's installation guidance. GitHub's `/releases/latest` endpoint returns v0.2.0 with `draft: false` and `prerelease: false`.
 
 Before promotion, downloaded all release assets again: checksums, standalone JavaScript, ZIP integrity, and all 37 archived files match the existing v0.2.0 tag. After promotion, all asset IDs, names, SHA-256 digests, and sizes still match the pre-promotion snapshot. The tag and deployed code are unchanged. Existing automated, managed-upgrade, and Fire TV evidence applies; no additional phone or endurance test is claimed.
+
+## Catalog acceptance and installation documentation — 2026-11-05
+
+GitHub reports [hacs/default #13407](https://github.com/hacs/default/pull/13407) merged at 15:46:07 UTC, with an approving review from Frenck. Reading the current upstream `plugin` file confirms `jaraggie/cozi-calendar-card` is present. The reviewer asks that installation guidance lead with search for **Cozi Family Calendar Card** and retain custom repository steps as a fallback. The README now follows that order, and the change is recorded under Unreleased for the next release. No runtime code, published tag, or release asset changed.
+
+This verifies catalog approval and the upstream entry. It does not establish propagation to every HACS/Marketplace installation or a clean search-based installation; the existing test instance already has a custom repository registration.

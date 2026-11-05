@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Lead installation instructions with HACS/Marketplace search following default-catalog approval; retain custom repositories as a fallback.
+
 ## 0.2.0 — 2026-11-05
 
 - Optional TV display mode with adjustable event text, compact navigation, safe margins, and a two-week view.

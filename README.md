@@ -35,19 +35,27 @@ Keep the subscription URL private. Enter it only in the calendar integration, ne
 
 ## Install
 
-### HACS custom repository
+### HACS / Home Assistant Marketplace
 
-Install this project as a custom Dashboard repository. Default-catalog acceptance is a separate process; this README does not imply it has happened.
+1. Open **HACS**, or **Settings → Marketplace** on Home Assistant versions with the built-in Marketplace.
+2. Search for **Cozi Family Calendar Card**.
+3. Open the card and **Download** the latest release (**Install** in Marketplace). Enabling pre-releases is not required.
+4. Reload the HA frontend. If dashboard resources are managed in YAML, add the module resource shown by the installer.
+5. Add the **Cozi Family Calendar** card to a dashboard and select your combined calendar entity. Configure your people, aliases, and colors.
 
-Version 0.2.0 is a regular release; enabling pre-releases is not required. On Home Assistant versions with the built-in **Marketplace**, open **Settings → Marketplace → Add from link**, enter the repository URL below, and follow the prompts. Older installations use HACS as described below.
+If the card does not appear in search yet, refresh the catalog or use the custom-repository fallback below. Catalog updates can take time to reach an installation.
 
 [Open this repository in HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=jaraggie&repository=cozi-calendar-card&category=plugin) · [GitHub releases](https://github.com/jaraggie/cozi-calendar-card/releases)
 
+### Custom repository fallback
+
+In Home Assistant Marketplace, choose **Add from link**, enter `https://github.com/jaraggie/cozi-calendar-card`, and follow the prompts.
+
+In HACS:
+
 1. In HACS, open the three-dot menu and choose **Custom repositories**.
 2. Paste `https://github.com/jaraggie/cozi-calendar-card` and choose **Dashboard** as the type.
-3. Add the repository, open **Cozi Family Calendar Card**, and download the desired release.
-4. Reload the HA frontend. If dashboard resources are managed in YAML, add the module resource shown by the installer.
-5. Add the **Cozi Family Calendar** card to a dashboard and select the combined calendar entity.
+3. Add the repository, open **Cozi Family Calendar Card**, and download the latest release. Then reload the frontend and add/configure the card as described above.
 
 These steps follow [HACS custom repository instructions](https://hacs.dev/docs/faq/custom_repositories/). Do not load both the manual and HACS copies of this card at the same time. When migrating, remove the old manual resource entry so the custom element is registered only once.
 
