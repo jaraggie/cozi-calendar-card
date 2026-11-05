@@ -117,4 +117,10 @@ The timer updates only overflowing day lists, never refetches the event API, and
 
 - Relaunched the physical Toshiba Fire TV through the existing parameterized script after the resource migration. Android UI inspection shows a full-display WebView at 0,0–1920,1080, no native Silk toolbar node, and the two-week grid at 26,138–1894,1054. First-page counters `1–4 / 6` and `1–4 / 5` subsequently advanced to `5–6 / 6` on three days and `5–5 / 5` on the fourth. This confirms all-days rotation and the fitted layout after the managed upgrade. The script retains 11px event text, four events per page, and a twelve-second interval.
 
-No new user visual approval was requested for this unchanged candidate layout; the earlier physical-TV approval remains the visual-feedback evidence. Multi-day unattended operation and browser fullscreen persistence after standby/reboot remain untested. Announcement and default-catalog submission remain separate open tasks.
+No new user visual approval was requested for this unchanged candidate layout; the earlier physical-TV approval remains the visual-feedback evidence. Multi-day unattended operation and browser fullscreen persistence after standby/reboot remain untested.
+
+## Community announcement submission — 2026-11-05
+
+The owner signed in to Home Assistant Community, reviewed the completed announcement, and explicitly approved Create Topic. After submission, the composer closed and the account's Pending (1) queue showed the announcement title, complete body, and both fictional screenshots. It is submitted for forum moderation, not yet verified publicly visible; no public topic URL is available. The exact submitted text and status are in `docs/COMMUNITY_ANNOUNCEMENT.md`. Do not create a duplicate.
+
+The catalog request is submitted separately as [hacs/default #13407](https://github.com/hacs/default/pull/13407). Neither forum submission nor the catalog request establishes approval by its maintainers.

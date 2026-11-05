@@ -1,10 +1,10 @@
-# Community announcement draft
+# Community announcement
 
-Status: prepared for publication. Version 0.2.0 is published; Marketplace upgrade, one managed resource, and physical Fire TV presentation/rotation are verified. The forum post remains pending sign-in. This file alone is not evidence of a public announcement.
+Status: submitted on 2026-11-05 after the project owner reviewed the draft and explicitly approved Create Topic. The signed-in account's [Pending queue](https://community.home-assistant.io/u/jaraggie/activity/pending) shows exactly one submitted announcement with the title below, its body, and both fictional screenshots. Forum moderation is pending; no public topic URL is available yet. Do not submit a duplicate while this item is queued.
 
-Suggested forum category: Home Assistant Community → Share your Projects → [Dashboards & Frontend](https://community.home-assistant.io/c/projects/frontend/34).
+Submitted category: Home Assistant Community → Share your Projects → [Dashboards & Frontend](https://community.home-assistant.io/c/projects/frontend/34).
 
-Suggested title: **Cozi Family Calendar Card: one family feed with attendee colors and shared events**
+Submitted title: **Cozi Family Calendar Card: one family feed with attendee colors and shared events**
 
 ---
 
