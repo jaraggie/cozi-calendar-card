@@ -27,7 +27,8 @@ External follow-up:
 
 - [x] Confirm forum moderation approval and record the public topic URL.
 - [ ] Collect community feedback through GitHub Issues.
-- [ ] Resolve catalog maintainer feedback and confirm merge/inclusion after the catalog scan. Submission alone is not acceptance.
+- [x] Address the maintainer's regular-release request and [reply with confirmation](https://github.com/hacs/default/pull/13407#issuecomment-6662199884); #13407 is ready for continued review.
+- [ ] Confirm catalog approval, merge, and inclusion after the catalog scan. Submission alone is not acceptance.
 
 Branding update: option A (Forest Calendar) is the selected project icon, promoted from prototype commit `8fbd376`. Published version **0.1.2** packages its SVG/PNG assets and README branding for GitHub and HACS repository details. GitHub’s custom social preview is saved. Hosted CI/HACS validation and the tag-specific release workflow passed; downloaded release checksums and all 32 archive files match the tag. Current HACS/Marketplace browse lists use a generic Dashboard category symbol; see `assets/README.md` for the verified source limitation.
 
