@@ -11,6 +11,7 @@ main{max-width:1280px;margin:auto}.demo-controls{display:flex;gap:12px;align-ite
 import {dateKeyAt,addDays,zonedEpoch} from './cozi-calendar-card.js';
 const demoOptions=new URLSearchParams(location.search);
 if(demoOptions.has('narrow'))document.querySelector('#frame').classList.add('narrow');
+if(demoOptions.get('cozi_display')==='tv'){document.body.style.padding='0';document.querySelector('main').style.maxWidth='none';}
 if(demoOptions.has('dark'))document.body.classList.add('dark');
 if(demoOptions.has('showcase')){const style=document.createElement('style');style.textContent='.demo-controls,.note{display:none}';document.head.append(style);}
 const zone='America/Chicago', today=dateKeyAt(Date.now(),zone), card=document.querySelector('cozi-calendar-card');
@@ -24,11 +25,13 @@ events.push(timed(today,14,'Project: Unrecognized prefix stays readable'));
 events.push(timed(addDays(today,1),11,'Lex: Art class'));
 if(demoOptions.has('stress'))events.push(timed(today,13,'Alex: <img src=x onerror=alert(1)> text stays text'));
 events.push(timed(today,16,'Sam: A very long event title that should remain readable in the agenda and details dialog'));
+if(demoOptions.has('rotationtest'))for(let i=0;i<7;i++)events.push(timed(addDays(today,1),9+i,`Alex: Future appointment ${i+1}`));
+window.demoApiCalls=0;
 let fail=false;
-const hass={config:{time_zone:zone},locale:{language:'en-US'},states:{'calendar.demo_cozi':{entity_id:'calendar.demo_cozi',state:'off',attributes:{friendly_name:'Example family feed'}}},async callApi(method,path){if(method!=='GET'||!path.startsWith('calendars/'))throw Error('Unexpected request');await new Promise((r)=>setTimeout(r,80));if(fail)throw Error('Simulated error');const params=new URLSearchParams(path.split('?')[1]),start=Date.parse(params.get('start')),end=Date.parse(params.get('end'));return events.filter((e)=>{const s=typeof e.start==='object'?zonedEpoch(e.start.date,0,0,0,zone):Date.parse(e.start),t=typeof e.end==='object'?zonedEpoch(e.end.date,0,0,0,zone):Date.parse(e.end);return s<end&&t>start;});}};
-card.setConfig({type:'custom:cozi-calendar-card',entity:'calendar.demo_cozi',title:'Our family',max_events_per_day:demoOptions.has('showcase')?2:4,members});card.hass=hass;
+const hass={config:{time_zone:zone},locale:{language:'en-US'},states:{'calendar.demo_cozi':{entity_id:'calendar.demo_cozi',state:'off',attributes:{friendly_name:'Example family feed'}}},async callApi(method,path){window.demoApiCalls++;if(method!=='GET'||!path.startsWith('calendars/'))throw Error('Unexpected request');await new Promise((r)=>setTimeout(r,80));if(fail)throw Error('Simulated error');const params=new URLSearchParams(path.split('?')[1]),start=Date.parse(params.get('start')),end=Date.parse(params.get('end'));return events.filter((e)=>{const s=typeof e.start==='object'?zonedEpoch(e.start.date,0,0,0,zone):Date.parse(e.start),t=typeof e.end==='object'?zonedEpoch(e.end.date,0,0,0,zone):Date.parse(e.end);return s<end&&t>start;});}};
+card.setConfig({type:'custom:cozi-calendar-card',entity:'calendar.demo_cozi',title:'Our family',max_events_per_day:demoOptions.get('cozi_display')==='tv'?4:demoOptions.has('showcase')?2:4,members});card.hass=hass;
 const editor=document.querySelector('cozi-calendar-card-editor');
-editor.setConfig({type:'custom:cozi-calendar-card',entity:'calendar.demo_cozi',title:'Our family',max_events_per_day:demoOptions.has('showcase')?2:4,members});editor.hass=hass;
+editor.setConfig({type:'custom:cozi-calendar-card',entity:'calendar.demo_cozi',title:'Our family',max_events_per_day:demoOptions.get('cozi_display')==='tv'?4:demoOptions.has('showcase')?2:4,members});editor.hass=hass;
 editor.addEventListener('config-changed',(event)=>{try{card.setConfig(event.detail.config);}catch(error){console.error(error.message);}});
 document.querySelector('#settings').onclick=()=>{document.querySelector('#editor').hidden=!document.querySelector('#editor').hidden;};
 document.querySelector('#theme').onclick=()=>document.body.classList.toggle('dark');

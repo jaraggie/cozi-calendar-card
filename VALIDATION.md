@@ -78,3 +78,29 @@ The user reported: “I installed and then successfully was notified to upgrade,
 The user then explicitly confirmed the tested card upgrade path as **0.1.1 → 0.1.3** and confirmed that the old manual resource was removed from Resources. R8 is complete based on these user-reported results.
 
 HA/frontend build versions were not supplied. The agent did not independently inspect the final resource list or separately verify post-upgrade live events; those details must not be inferred from the reported successful upgrade.
+
+
+## TV presentation candidate 0.2.0 — 2026-11-04
+
+This is an **unreleased local candidate**, not a published Marketplace upgrade. The installed release file was preserved; one resource entry was temporarily pointed to a separate candidate file for testing. Private instance addresses, script IDs, and rollback details are stored outside the public repository.
+
+- JavaScript syntax, **24 automated tests**, release structure, and bounded privacy checks pass. New tests cover opt-in TV defaults, allowlisted launcher parameters, civil two-week ranges across year/DST boundaries, navigation, and visible-viewport sizing when browser chrome reduces available height.
+- The fictional Safari harness initially caught overflow with three events at 960 × 540, then caught the toolbar-visible 960 × 480 case. The final 11px/four-event layout passes the 960 × 480 fit check: 14 cells, card starts at 0,0, grid bottom at 468px, safe margin retained, and no card scrolling. The 960 × 540 and 1280 × 720 presets also fit. Opening People temporarily adds a filter row and may require scrolling.
+- Verified People opens/collapses; an Alex filter retains family breakfast and the shared community-garden appointment. Restoring Everyone returns all events. A plain-URL standard preview retains the title, calendar name, month view, and attendee filters.
+- On the physical Toshiba Fire TV, the user identified clipping and the Silk toolbar. ADB UI inspection measured a 120px native toolbar and confirmed clipped bottom-row controls. Added visible-viewport sizing, an adjustable safe margin, compact attendee dots, configurable event text size, and a separate browser-native fullscreen control.
+- ADB activation of the named Browser fullscreen control succeeds on this TV. The parameterized launch script was saved and run with 11px text, four events per day, and automatic fullscreen. Its first selector attempt reported the control was not yet available; the second reported a successful click. Subsequent device UI inspection shows a full-display WebView from 0,0 to 1920,1080, no Silk toolbar node, and a calendar grid ending at y=1054.
+- The user confirmed: **“Looks good—keep this size and detail.”** This is physical display feedback, in addition to the UI-geometry evidence. TV standby/reboot persistence of native browser fullscreen was not tested as part of this layout change.
+
+Use the [parameterized launcher example](https://github.com/jaraggie/cozi-calendar-card/blob/main/docs/TV_LAUNCHER.md). Card YAML/visual-editor options and per-browser URL parameters are documented in the README. No HACS release, GitHub publication, or catalog submission was performed for this candidate.
+
+
+## TV overflow rotation — 2026-11-05
+
+Added optional automatic paging for TV month/two-week grids with `tv_auto_scroll` (`"off"`, `today`, `all`) and `tv_scroll_seconds` (5–300 seconds). The same options are available in the visual editor, URL overrides, and launcher fields. Existing cards retain off; the TV launcher now defaults to all overflowing days at 12 seconds, following the user's selection.
+
+- **29 automated tests pass.** New cases cover complete cycles including partial final pages, today/all/off/standard scoping, progress across unchanged refreshes, list/date resets, configuration validation, and timer behavior while interacting or disconnected.
+- A real browser timer harness at 960 × 540 passed today-only rotation: all **7/7** current-day fixture events appeared, unselected days remained unchanged, the grid fit, and API-call count stayed unchanged. All-days mode also passed, including **9/9** events on an overflowing future day. These checks use fictional events and actual five-second intervals in the test harness; the deployed script uses twelve seconds.
+- Installed a separate candidate resource and updated the existing TV script. Read-only Android UI inspection showed today's **5–6 / 6** counter and the formerly hidden appointments. The browser remained fullscreen with WebView 0,0–1920,1080 and grid ending at y=1054.
+- The user selected **all overflowing days at 12 seconds**, and that choice was saved as the script default and launched. A subsequent physical-device read showed later-page range counters on four separate days, with the same fullscreen/grid bounds and no native toolbar. This does not claim a multi-day unattended endurance test.
+
+The timer updates only overflowing day lists, never refetches the event API, and pauses for details, filters, focused events/days, recent interaction, or hidden documents. This remains part of the unreleased local 0.2.0 candidate.

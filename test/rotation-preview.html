@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>TV event rotation validation</title>
+<style>body{font:14px system-ui;background:#ddd;margin:12px}iframe{border:0;width:960px;height:540px}button{padding:8px;margin:0 8px 12px 0}#results{white-space:pre-wrap;padding:8px}</style>
+<button data-mode="today">Test today only</button><button data-mode="all">Test all overflowing days</button><button data-mode="off">Test disabled</button><div id="results" role="status">Loading</div><iframe title="Calendar rotation preview"></iframe>
+<script type="module">
+import {eventsOnDay,dateKeyAt} from '../cozi-calendar-card.js';
+const frame=document.querySelector('iframe'),status=document.querySelector('#results');let mode='today',seen=new Map(),started=null,requests=null;
+function launch(value){mode=value;seen=new Map();started=null;requests=null;frame.src=`../demo.html?showcase&rotationtest&cozi_display=tv&cozi_view=fortnight&cozi_screen=fill&cozi_font_size=11&cozi_max_events=4&cozi_scroll=${value}&cozi_scroll_seconds=5`;}
+for(const b of document.querySelectorAll('[data-mode]'))b.onclick=()=>launch(b.dataset.mode);
+setInterval(()=>{const win=frame.contentWindow,card=win?.demoCard,root=card?.shadowRoot;if(!card||card._loading||!card._events.length)return;
+const today=dateKeyAt(Date.now(),'America/Chicago'),grid=root.querySelector('.month'),cells=[...root.querySelectorAll('td[data-day]')];
+if(started===null){started=Date.now();requests=win.demoApiCalls;}
+let complete=true,otherStable=true,progress=[];
+for(const cell of cells){const day=cell.dataset.day,events=eventsOnDay(card._events,day,'America/Chicago');if(events.length<=4)continue;
+const ids=[...cell.querySelectorAll('.event')].map(b=>card._events[Number(b.dataset.index)].id);if(!seen.has(day))seen.set(day,new Set());ids.forEach(id=>seen.get(day).add(id));
+const active=mode==='all'||(mode==='today'&&day===today);if(active){if(seen.get(day).size!==events.length)complete=false;progress.push(`${day}: saw ${seen.get(day).size}/${events.length}`);}else if(JSON.stringify(ids)!==JSON.stringify(events.slice(0,4).map(e=>e.id)))otherStable=false;
+}
+const fit=grid.getBoundingClientRect().bottom+12<=540+1&&card.scrollHeight<=card.clientHeight+1,noExtraCalls=win.demoApiCalls===requests,elapsed=Math.floor((Date.now()-started)/1000),ready=elapsed>=11;
+status.textContent=`${ready?(complete&&otherStable&&fit&&noExtraCalls?'PASS':'FAIL'):'RUNNING'}: ${mode}, ${elapsed}s\n${progress.join('\n')}\nGrid fits: ${fit}; unselected days stable: ${otherStable}; no extra API calls: ${noExtraCalls}`;
+},250);launch('today');
+</script></html>

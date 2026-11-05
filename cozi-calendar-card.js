@@ -1,5 +1,5 @@
 /* Cozi Family Calendar Card — independent community implementation. No external dependencies. */
-export const VERSION = "0.1.3";
+export const VERSION = "0.2.0";
 // People are explicit configuration: never assume a household or infer names from arbitrary titles.
 export const DEFAULT_MEMBERS = Object.freeze([]);
 const key = (s) => String(s).normalize("NFKC").trim().replace(/\s+/gu, " ").toLocaleLowerCase("en");
@@ -45,6 +45,28 @@ export function zonedEpoch(day, hour = 0, minute = 0, second = 0, zone = "UTC") 
   }
   throw new Error("Date does not exist in the selected time zone");
 }
+// Only presentation options can be overridden by a launcher URL; never entity or people.
+export function presentationConfig(input, search = "") {
+  const result = {...input}, params = new URLSearchParams(search);
+  for (const [param, field, choices] of [
+    ["cozi_display", "display_mode", ["standard", "tv"]],
+    ["cozi_view", "initial_view", ["month", "fortnight", "agenda"]],
+    ["cozi_screen", "screen_mode", ["normal", "fill"]],
+    ["cozi_scroll", "tv_auto_scroll", ["off", "today", "all"]],
+  ]) if (choices.includes(params.get(param))) result[field] = params.get(param);
+  for (const [param, field] of [["cozi_filters", "show_filters"], ["cozi_header", "show_header"], ["cozi_footer", "show_footer"]]) {
+    if (["0", "1"].includes(params.get(param))) result[field] = params.get(param) === "1";
+  }
+  const seconds = params.get("cozi_scroll_seconds");
+  if (/^\d{1,3}$/u.test(seconds ?? "") && Number(seconds) >= 5 && Number(seconds) <= 300) result.tv_scroll_seconds = Number(seconds);
+  const limit = params.get("cozi_max_events");
+  if (/^(?:[1-9]|1[0-9]|20)$/u.test(limit ?? "")) result.max_events_per_day = Number(limit);
+  const fontSize = params.get("cozi_font_size");
+  if (/^(?:9|1[0-9]|2[0-2])$/u.test(fontSize ?? "")) result.tv_font_size = Number(fontSize);
+  const safe = params.get("cozi_safe_area");
+  if (/^(?:[0-9]|[1-5][0-9]|6[0-4])$/u.test(safe ?? "")) result.tv_safe_area = Number(safe);
+  return result;
+}
 export function normalizeConfig(input = {}) {
   if (input.entity && !/^calendar\.[a-z0-9_]+$/u.test(input.entity)) throw new Error("Choose a calendar entity.");
   if (input.members != null && !Array.isArray(input.members)) throw new Error("members must be a list of people.");
@@ -62,8 +84,22 @@ export function normalizeConfig(input = {}) {
     if (used.has(key(name))) throw new Error(`Repeated member name or alias: ${name}`);
     used.add(key(name));
   }
-  const view = input.initial_view ?? "month";
-  if (!["month", "agenda"].includes(view)) throw new Error("initial_view must be month or agenda.");
+  const displayMode = input.display_mode ?? "standard";
+  if (!["standard", "tv"].includes(displayMode)) throw new Error("display_mode must be standard or tv.");
+  const autoScroll = input.tv_auto_scroll ?? "off", scrollSeconds = input.tv_scroll_seconds ?? 12;
+  if (!["off", "today", "all"].includes(autoScroll)) throw new Error("tv_auto_scroll must be off, today, or all.");
+  if (!Number.isInteger(scrollSeconds) || scrollSeconds < 5 || scrollSeconds > 300) throw new Error("tv_scroll_seconds must be 5–300 seconds.");
+  const fontSize = input.tv_font_size ?? 13;
+  if (!Number.isInteger(fontSize) || fontSize < 9 || fontSize > 22) throw new Error("tv_font_size must be 9–22 CSS pixels.");
+  const safeArea = input.tv_safe_area ?? (displayMode === "tv" ? 12 : 0);
+  if (!Number.isInteger(safeArea) || safeArea < 0 || safeArea > 64) throw new Error("tv_safe_area must be 0–64 CSS pixels.");
+  const screenMode = input.screen_mode ?? "normal";
+  if (!["normal", "fill"].includes(screenMode)) throw new Error("screen_mode must be normal or fill.");
+  for (const name of ["show_header", "show_filters", "show_footer"]) {
+    if (input[name] != null && typeof input[name] !== "boolean") throw new Error(`${name} must be true or false.`);
+  }
+  const view = input.initial_view ?? (displayMode === "tv" ? "fortnight" : "month");
+  if (!["month", "fortnight", "agenda"].includes(view)) throw new Error("initial_view must be month, fortnight, or agenda.");
   const start = input.start_of_week ?? 0;
   if (!Number.isInteger(start) || start < 0 || start > 6) throw new Error("start_of_week must be 0–6.");
   for (const [name, fallback, min, max] of [["days_to_show", 7, 1, 90], ["max_events_per_day", 4, 1, 20], ["refresh_minutes", 5, 1, 1440]]) {
@@ -73,8 +109,10 @@ export function normalizeConfig(input = {}) {
   for (const name of ["family_color", "shared_color"]) if (input[name] && !HEX.test(input[name])) throw new Error(`${name} needs a six-digit hex color.`);
   if (input.time_zone) formatter(input.time_zone).format(new Date());
   return { ...input, title: input.title ?? "Family calendar", entity: input.entity ?? "", members,
-    initial_view: view, start_of_week: start, days_to_show: input.days_to_show ?? 7,
-    max_events_per_day: input.max_events_per_day ?? 4, refresh_minutes: input.refresh_minutes ?? 5,
+    tv_auto_scroll: autoScroll, tv_scroll_seconds: scrollSeconds, tv_font_size: fontSize, tv_safe_area: safeArea, screen_mode: screenMode, show_header: input.show_header ?? displayMode !== "tv",
+    show_filters: input.show_filters ?? displayMode !== "tv", show_footer: input.show_footer ?? displayMode !== "tv",
+    display_mode: displayMode, initial_view: view, start_of_week: start, days_to_show: input.days_to_show ?? 7,
+    max_events_per_day: input.max_events_per_day ?? (displayMode === "tv" ? 3 : 4), refresh_minutes: input.refresh_minutes ?? 5,
     family_color: input.family_color ?? "#427f73", shared_color: input.shared_color ?? "#71618f",
     strip_prefix: input.strip_prefix !== false, show_attendees: input.show_attendees !== false,
     deduplicate_events: input.deduplicate_events !== false };
@@ -172,6 +210,11 @@ export class CoziCalendarCard extends Base {
     this.attachShadow({ mode: "open" });
     this._events = []; this._selected = new Set(); this._requestId = 0; this._compact = false;
     this.shadowRoot.addEventListener("click", (e) => this._click(e));
+    const pauseRotation = (event) => {
+      if (!event.target.closest?.('[data-action="browser-fullscreen"]')) this._rotationPauseUntil = Date.now() + 30000;
+    };
+    this.shadowRoot.addEventListener("pointerdown", pauseRotation);
+    this.shadowRoot.addEventListener("keydown", pauseRotation);
     this.shadowRoot.addEventListener("cancel", (event) => { event.preventDefault(); this._closeDetail(); }, true);
   }
   static getConfigElement() { return document.createElement("cozi-calendar-card-editor"); }
@@ -184,7 +227,10 @@ export class CoziCalendarCard extends Base {
     return { entity: selected?.entity_id ?? "", title: "Family calendar", members: [] };
   }
   setConfig(input) {
-    this._config = normalizeConfig(input); this._view = this._config.initial_view; this._userView = false;
+    this._rotationPages = new Map(); this._rotationDate = null; this._rotationPauseUntil = 0;
+    this._followToday = true;
+    this._config = normalizeConfig(presentationConfig(input, globalThis.location?.search ?? ""));
+    this._filtersOpen = this._config.show_filters; this._fillWindow = this._config.screen_mode === "fill"; this._view = this._config.initial_view; this._userView = false;
     this._anchor = null; this._events = []; this._detail = null; this._selected = new Set();
     this._loadedKey = null; this._pendingKey = null; this._requestId++; this._error = "";
     this._loading = false; this._updated = null; this._skipped = 0;
@@ -205,21 +251,47 @@ export class CoziCalendarCard extends Base {
       const compact = entries[0].contentRect.width < 620;
       if (compact !== this._compact) { this._compact = compact; this._render(); this._load(); }
     });
+    this._viewportChanged = () => this._updateViewport();
+    globalThis.addEventListener?.("resize", this._viewportChanged);
+    globalThis.visualViewport?.addEventListener("resize", this._viewportChanged);
+    this._updateViewport();
     this._observer.observe(this); this._startTimer(); this._load();
   }
   disconnectedCallback() {
+    globalThis.removeEventListener?.("resize", this._viewportChanged);
+    globalThis.visualViewport?.removeEventListener("resize", this._viewportChanged);
+    clearInterval(this._rotationTimer);
     clearInterval(this._timer); this._observer?.disconnect(); this._requestId++; this._pendingKey = null; this._loading = false;
+  }
+  _updateViewport() {
+    const height = Math.min(globalThis.innerHeight || Infinity, globalThis.visualViewport?.height || Infinity);
+    if (Number.isFinite(height)) this.style?.setProperty("--cozi-window-height", `${Math.floor(height)}px`);
+    this.style?.setProperty("--cozi-tv-font-size", `${this._config?.tv_font_size ?? 13}px`);
+    this.style?.setProperty("--cozi-safe-area", `${this._config?.tv_safe_area ?? 0}px`);
   }
   getCardSize() { return this._effectiveView() === "month" ? 12 : 8; }
   getGridOptions() { return { columns: "full", rows: "auto", min_columns: 6 }; }
   _zone() { return this._config?.time_zone ?? this._hass?.config?.time_zone ?? Intl.DateTimeFormat().resolvedOptions().timeZone; }
   _locale() { return this._config?.language ?? this._hass?.locale?.language ?? "en-US"; }
-  _effectiveView() { return !this._userView && this._compact ? "agenda" : this._view ?? "month"; }
+  _effectiveView() { return !this._userView && this._compact && this._config.display_mode !== "tv" ? "agenda" : this._view ?? "month"; }
   _startTimer() {
+    clearInterval(this._rotationTimer);
+    if (this.isConnected && this._config?.display_mode === "tv" && this._config.tv_auto_scroll !== "off") {
+      this._rotationTimer = setInterval(() => this._rotateEvents(), this._config.tv_scroll_seconds * 1000);
+    }
     clearInterval(this._timer);
-    if (this.isConnected && this._config) this._timer = setInterval(() => { this._render(); this._load(true); }, this._config.refresh_minutes * 60000);
+    if (this.isConnected && this._config) this._timer = setInterval(() => {
+      if (this._config.display_mode === "tv" && this._followToday) this._anchor = dateKeyAt(Date.now(), this._zone());
+      this._render(); this._load(true);
+    }, this._config.refresh_minutes * 60000);
   }
   _range() {
+    if (this._effectiveView() === "fortnight") {
+      const weekday = new Date(`${this._anchor}T12:00:00Z`).getUTCDay();
+      const start = addDays(this._anchor, -((weekday - this._config.start_of_week + 7) % 7));
+      const days = Array.from({length:14}, (_, i) => addDays(start, i));
+      return {days, start, end:addDays(start, 14)};
+    }
     if (this._effectiveView() === "month") {
       const days = monthDays(this._anchor, this._config.start_of_week);
       return { days, start: days[0], end: addDays(days.at(-1), 1) };
@@ -246,6 +318,42 @@ export class CoziCalendarCard extends Base {
       this._error = "Could not load this calendar. Check the entity and connection, then retry.";
     } finally {
       if (id === this._requestId) { this._loading = false; this._pendingKey = null; this._render(); }
+    }
+  }
+  _dayWindow(events, day, today, advance = false) {
+    if (this._rotationDate !== today) { this._rotationPages = new Map(); this._rotationDate = today; }
+    const max = this._config.max_events_per_day;
+    const rotating = this._config.display_mode === "tv" && events.length > max &&
+      (this._config.tv_auto_scroll === "all" || (this._config.tv_auto_scroll === "today" && day === today));
+    let page = 0;
+    if (rotating) {
+      const signature = JSON.stringify([max, events.map((event) => event.id)]);
+      let state = this._rotationPages.get(day);
+      if (!state || state.signature !== signature) state = {signature, page:0};
+      else if (advance) state.page = (state.page + 1) % Math.ceil(events.length / max);
+      this._rotationPages.set(day, state); page = state.page;
+    }
+    const start = page * max, end = Math.min(start + max, events.length);
+    return {events:events.slice(start, end), start, end, total:events.length, rotating};
+  }
+  _overflowLabel(window) {
+    return window.rotating ? `↻ ${window.start + 1}–${window.end} / ${window.total}` : `+${window.total - window.end} more`;
+  }
+  _rotateEvents() {
+    if (!this.isConnected || !this._hass || this._config?.display_mode !== "tv" || this._config.tv_auto_scroll === "off" ||
+        !["month", "fortnight"].includes(this._effectiveView()) || this._detail || this._filtersOpen ||
+        globalThis.document?.hidden || Date.now() < (this._rotationPauseUntil ?? 0) ||
+        this.shadowRoot.activeElement?.closest?.("td[data-day]")) return;
+    const today = dateKeyAt(Date.now(), this._zone());
+    const visible = filterEvents(this._events, this._selected);
+    for (const cell of this.shadowRoot.querySelectorAll("td[data-day]")) {
+      const day = cell.dataset.day, events = eventsOnDay(visible, day, this._zone());
+      const window = this._dayWindow(events, day, today, true);
+      if (!window.rotating) continue;
+      // Update only this day's list. Keep the host, fullscreen state, controls and focus intact.
+      cell.querySelector(".day-events").innerHTML = window.events.map((event) => this._eventButton(event, day, true)).join("");
+      const more = cell.querySelector(".more");
+      if (more) more.textContent = this._overflowLabel(window);
     }
   }
   _dayLabel(day, options) { return new Intl.DateTimeFormat(this._locale(), { timeZone: "UTC", ...options }).format(new Date(`${day}T12:00:00Z`)); }
@@ -275,8 +383,12 @@ export class CoziCalendarCard extends Base {
   }
   _eventButton(event, day, month = false) {
     const idx = this._events.indexOf(event);
-    return `<button class="event ${month ? "month-event" : "agenda-event"} ${event.allDay ? "all-day" : ""}" data-action="event" data-index="${idx}" style="--event-color:${event.color}" aria-label="${esc(`${event.displayTitle}, ${this._timeFor(event,day)}, ${event.family ? "Family" : event.attendees.map((a)=>a.name).join(", ")}`)}">
-      <span class="event-time">${esc(this._timeFor(event,day))}</span><span class="event-body"><span class="event-title">${esc(event.displayTitle)}</span><span class="attendees">${this._attendees(event)}</span></span></button>`;
+    const time = `<span class="event-time">${esc(this._timeFor(event,day))}</span>`;
+    const attendees = `<span class="attendees">${this._attendees(event)}</span>`;
+    const content = month && this._config.display_mode === "tv"
+      ? `<span class="event-meta">${time}${attendees}</span><span class="event-title">${esc(event.displayTitle)}</span>`
+      : `${time}<span class="event-body"><span class="event-title">${esc(event.displayTitle)}</span>${attendees}</span>`;
+    return `<button class="event ${month ? "month-event" : "agenda-event"} ${event.allDay ? "all-day" : ""}" data-action="event" data-index="${idx}" style="--event-color:${event.color}" aria-label="${esc(`${event.displayTitle}, ${this._timeFor(event,day)}, ${event.family ? "Family" : event.attendees.map((a)=>a.name).join(", ")}`)}">${content}</button>`;
   }
   _render() {
     if (!this._config || !this._hass) return;
@@ -290,14 +402,15 @@ export class CoziCalendarCard extends Base {
     const heading = view === "month" ? this._dayLabel(this._anchor,{month:"long",year:"numeric"}) : `${this._dayLabel(range.start,{month:"short",day:"numeric"})} – ${this._dayLabel(addDays(range.end,-1),{month:"short",day:"numeric",year:"numeric"})}`;
     let body = "";
     if (!this._config.entity) body = '<div class="notice">Choose your combined Cozi calendar in the card settings.</div>';
-    else if (view === "month") {
+    else if (view === "month" || view === "fortnight") {
       const headings = Array.from({length:7},(_,i)=>this._dayLabel(addDays("2026-11-01",(i+this._config.start_of_week)%7),{weekday:"short"}));
       body = `<div class="month-scroll"><table class="month"><caption class="sr-only">${esc(heading)}</caption><thead><tr>${headings.map((d)=>`<th scope="col">${esc(d)}</th>`).join("")}</tr></thead><tbody>`;
-      for (let week=0;week<6;week++) {
+      for (let week=0;week<range.days.length/7;week++) {
         body += "<tr>";
         for (const day of range.days.slice(week*7,week*7+7)) {
           const events = eventsOnDay(visible,day,this._zone()), max = this._config.max_events_per_day;
-          body += `<td class="${day.slice(0,7)!==this._anchor.slice(0,7)?"outside":""} ${day===today?"today":""}"><button class="day-number" data-action="day" data-day="${day}" aria-label="${esc(this._dayLabel(day,{dateStyle:"full"}))}" ${day===today?'aria-current="date"':""}>${Number(day.slice(-2))}</button><div class="day-events">${events.slice(0,max).map((e)=>this._eventButton(e,day,true)).join("")}</div>${events.length>max?`<button class="more" data-action="day" data-day="${day}">+${events.length-max} more</button>`:""}</td>`;
+          const window = this._dayWindow(events, day, today);
+          body += `<td data-day="${day}" class="${day.slice(0,7)!==this._anchor.slice(0,7)?"outside":""} ${day===today?"today":""}"><button class="day-number" data-action="day" data-day="${day}" aria-label="${esc(this._dayLabel(day,{dateStyle:"full"}))}" ${day===today?'aria-current="date"':""}>${view === "fortnight" ? esc(this._dayLabel(day,{month:"short",day:"numeric"})) : Number(day.slice(-2))}</button><div class="day-events">${window.events.map((e)=>this._eventButton(e,day,true)).join("")}</div>${events.length>max?`<button class="more" data-action="day" data-day="${day}">${esc(this._overflowLabel(window))}</button>`:""}</td>`;
         }
         body += "</tr>";
       }
@@ -309,13 +422,15 @@ export class CoziCalendarCard extends Base {
         return `<section class="agenda-day"><h3 class="${day===today?"today-heading":""}">${day===today?"Today · ":""}${esc(this._dayLabel(day,{weekday:"long",month:"short",day:"numeric"}))}</h3>${events.length?events.map((e)=>this._eventButton(e,day)).join(""):'<p class="empty-day">No events</p>'}</section>`;
       }).join("") || '<p class="notice">No events match these filters in this date range.</p>'}</div>`;
     }
-    const detail = this._detail;
-    this.shadowRoot.innerHTML = `<style>${STYLES}</style><ha-card><header><div><h2>${esc(this._config.title)}</h2><span class="subtitle">${esc(this._hass.states?.[this._config.entity]?.attributes?.friendly_name ?? "Cozi family calendar")}</span></div><button class="icon-button" data-action="refresh" data-focus="refresh" aria-label="Reload calendar events" ${this._loading?"disabled":""}>↻</button></header>
-      <nav class="toolbar" aria-label="Calendar controls"><div class="date-controls"><button data-action="previous" data-focus="previous" aria-label="Previous ${view=== "month"?"month":"date range"}">‹</button><button data-action="today" data-focus="today">Today</button><button data-action="next" data-focus="next" aria-label="Next ${view=== "month"?"month":"date range"}">›</button></div><h3>${esc(heading)}</h3><div class="view-controls"><button data-action="month" data-focus="month" aria-pressed="${view==="month"}">Month</button><button data-action="agenda" data-focus="agenda" aria-pressed="${view==="agenda"}">Agenda</button></div></nav>
-      <div class="filters" aria-label="Filter by attendee"><button class="filter" data-action="filter" data-member="" data-focus="filter-all" aria-pressed="${!this._selected.size}">Everyone</button>${filters.map((m)=>`<button class="filter" data-action="filter" data-member="${esc(m.id)}" data-focus="filter-${esc(m.id)}" aria-pressed="${this._selected.has(m.id)}"><i style="background:${m.color}"></i>${esc(m.name)}</button>`).join("")}</div>
+    const detail = this._detail, tv = this._config.display_mode === "tv";
+    this._updateViewport();
+    this.classList?.toggle("window-fill", this._fillWindow);
+    this.shadowRoot.innerHTML = `<style>${STYLES}</style><ha-card class="${tv ? "tv" : "standard"} ${view === "fortnight" ? "fortnight" : ""}">${!this._config.show_header ? "" : `<header><div><h2>${esc(this._config.title)}</h2><span class="subtitle">${esc(this._hass.states?.[this._config.entity]?.attributes?.friendly_name ?? "Cozi family calendar")}</span></div><button class="icon-button" data-action="refresh" data-focus="refresh" aria-label="Reload calendar events" ${this._loading?"disabled":""}>↻</button></header>`}
+      <nav class="toolbar" aria-label="Calendar controls"><div class="date-controls"><button data-action="previous" data-focus="previous" aria-label="Previous ${view=== "month"?"month":"date range"}">‹</button><button data-action="today" data-focus="today">Today</button><button data-action="next" data-focus="next" aria-label="Next ${view=== "month"?"month":"date range"}">›</button></div><h3>${esc(heading)}</h3><div class="view-controls"><button data-action="month" data-focus="month" aria-pressed="${view==="month"}">Month</button><button data-action="fortnight" data-focus="fortnight" aria-pressed="${view==="fortnight"}">2 weeks</button><button data-action="agenda" data-focus="agenda" aria-pressed="${view==="agenda"}">Agenda</button></div>${tv || !this._config.show_filters || this._config.screen_mode === "fill" ? `<div class="tv-tools">${tv && view !== "fortnight" ? `<button data-action="fortnight" data-focus="fortnight">2 weeks</button>` : ""}<button data-action="filters" data-focus="filters" aria-expanded="${this._filtersOpen}" aria-label="Show or hide attendee filters">People${this._selected.size ? ` (${this._selected.size})` : ""}</button><button data-action="fullscreen" data-focus="fullscreen" aria-label="${this._fillWindow ? "Exit fill window" : "Fill window with calendar"}" aria-pressed="${this._fillWindow}">⛶</button>${tv ? `<button data-action="browser-fullscreen" data-focus="browser-fullscreen" aria-label="Browser fullscreen">▣</button>` : ""}</div>` : ""}</nav>
+      <div class="filters ${!this._filtersOpen ? "hidden" : ""}" aria-label="Filter by attendee"><button class="filter" data-action="filter" data-member="" data-focus="filter-all" aria-pressed="${!this._selected.size}">Everyone</button>${filters.map((m)=>`<button class="filter" data-action="filter" data-member="${esc(m.id)}" data-focus="filter-${esc(m.id)}" aria-pressed="${this._selected.has(m.id)}"><i style="background:${m.color}"></i>${esc(m.name)}</button>`).join("")}</div>
       ${this._config.entity && !this._config.members.length?'<div class="notice">Add your people and aliases in the card settings to enable attendee colors and person filters. Family events are recognized automatically.</div>':""}
       <div role="status" class="status">${this._loading?"Loading calendar…":this._error?esc(this._error):this._skipped?`${this._skipped} invalid event(s) could not be displayed.`:""}</div>${body}
-      <footer>${this._updated?`Loaded ${esc(this._time(this._updated))} · `:""}${esc(this._zone())}${this._selected.size?" · Family events remain visible with person filters":""}</footer>
+      ${!this._config.show_footer ? "" : `<footer>${this._updated?`Loaded ${esc(this._time(this._updated))} · `:""}${esc(this._zone())}${this._selected.size?" · Family events remain visible with person filters":""}</footer>`}
       ${detail?`<dialog aria-labelledby="cozi-detail-title"><div class="dialog-head"><h2 id="cozi-detail-title">${esc(detail.displayTitle)}</h2><button data-action="close" aria-label="Close event details">×</button></div><div class="attendees">${this._attendees(detail)}</div><p>${esc(this._detailDate(detail))}</p>${detail.location?`<p><strong>Location</strong><br>${esc(detail.location)}</p>`:""}${detail.description?`<p class="description">${esc(detail.description)}</p>`:""}${detail.status==="tentative"?"<p>Tentative</p>":""}<button data-action="close">Close</button></dialog>`:""}</ha-card>`;
     const dialog = this.shadowRoot.querySelector("dialog");
     if (dialog && this.isConnected) dialog.showModal();
@@ -324,6 +439,21 @@ export class CoziCalendarCard extends Base {
   _click(event) {
     const button = event.target.closest("button[data-action]"); if (!button) return;
     const action = button.dataset.action;
+    if (["filter", "day", "today", "previous", "next", "month", "fortnight", "agenda"].includes(action)) this._rotationPages?.clear();
+    if (action === "filters") { this._filtersOpen = !this._filtersOpen; this._render(); return; }
+    if (action === "browser-fullscreen") {
+      const request = this.requestFullscreen ?? this.webkitRequestFullscreen;
+      try {
+        const pending = request?.call(this);
+        if (!request) throw new Error("Fullscreen unsupported");
+        pending?.catch(() => { this._error = "Browser fullscreen is unavailable. Fill-window mode remains available."; this._render(); });
+      } catch { this._error = "Browser fullscreen is unavailable. Fill-window mode remains available."; this._render(); }
+      return;
+    }
+    if (action === "fullscreen") {
+      this._fillWindow = !this._fillWindow; this._render();
+      return;
+    }
     if (action === "event") { this._detailFocus=button.dataset.index; this._detail=this._events[Number(button.dataset.index)]; this._render(); return; }
     if (action === "close") { this._closeDetail(); return; }
     if (action === "filter") {
@@ -332,12 +462,13 @@ export class CoziCalendarCard extends Base {
       this._render(); return;
     }
     if (action === "refresh") { this._load(true); return; }
-    if (action === "day") { this._anchor=button.dataset.day; this._view="agenda"; this._userView=true; }
-    if (["month","agenda"].includes(action)) { this._view=action; this._userView=true; }
-    if (action === "today") this._anchor=dateKeyAt(Date.now(),this._zone());
+    if (action === "day") { this._followToday=false; this._anchor=button.dataset.day; this._view="agenda"; this._userView=true; }
+    if (["month","fortnight","agenda"].includes(action)) { this._view=action; this._userView=true; }
+    if (action === "today") { this._anchor=dateKeyAt(Date.now(),this._zone()); this._followToday=true; }
     if (["previous","next"].includes(action)) {
+      this._followToday=false;
       const dir=action === "previous"?-1:1;
-      this._anchor=this._effectiveView() === "month"?shiftMonth(this._anchor,dir):addDays(this._anchor,dir*this._config.days_to_show);
+      this._anchor=this._effectiveView() === "month"?shiftMonth(this._anchor,dir):addDays(this._anchor,dir*(this._effectiveView() === "fortnight" ? 14 : this._config.days_to_show));
     }
     this._detail=null; this._render(); this._load();
   }
@@ -346,6 +477,23 @@ export class CoziCalendarCard extends Base {
 const STYLES = `
 :host{display:block;container-type:inline-size;--cozi-text:var(--primary-text-color,#202b33);--cozi-muted:var(--secondary-text-color,#60717d);--cozi-line:var(--divider-color,#dce3e8);--cozi-bg:var(--card-background-color,#fff);--cozi-accent:var(--primary-color,#087e91);color:var(--cozi-text);font-family:var(--primary-font-family,system-ui,sans-serif)}
 *{box-sizing:border-box}ha-card{display:block;background:var(--cozi-bg);border-radius:var(--ha-card-border-radius,16px);overflow:hidden;border:1px solid var(--cozi-line)}h2,h3,p{margin:0}header{display:flex;align-items:center;justify-content:space-between;padding:22px 24px 16px}h2{font-size:23px;font-weight:650;line-height:1.25}.subtitle{font-size:12px;color:var(--cozi-muted);display:block;margin-top:5px}button{font:inherit;color:inherit;cursor:pointer;background:transparent;border:1px solid transparent;border-radius:8px;min-height:36px;padding:7px 11px}button:hover{background:color-mix(in srgb,var(--cozi-accent) 9%,transparent)}button:focus-visible{outline:3px solid var(--cozi-accent);outline-offset:1px}button:disabled{opacity:.5;cursor:wait}.icon-button{font-size:25px}.toolbar{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:0 20px 14px;flex-wrap:wrap}.toolbar h3{font-size:19px;font-weight:600}.date-controls,.view-controls{display:flex;align-items:center;gap:3px}.date-controls button:first-child,.date-controls button:last-child{font-size:24px;line-height:1}.view-controls{background:color-mix(in srgb,var(--cozi-accent) 6%,transparent);padding:3px;border-radius:10px}.view-controls [aria-pressed=true]{background:var(--cozi-accent);color:var(--cozi-bg)}.filters{display:flex;flex-wrap:wrap;gap:6px;padding:0 22px 13px}.filter{border-color:var(--cozi-line);border-radius:22px;font-size:12px;min-height:30px;display:inline-flex;align-items:center;gap:6px}.filter[aria-pressed=true]{border-color:var(--cozi-accent);box-shadow:inset 0 0 0 1px var(--cozi-accent);background:color-mix(in srgb,var(--cozi-accent) 10%,transparent)}i{display:inline-block;border-radius:50%;width:8px;height:8px;flex-shrink:0}.status{padding:0 24px;font-size:13px;color:var(--cozi-muted)}.status:not(:empty){padding-bottom:12px}.month{width:100%;border-collapse:collapse;table-layout:fixed}.month th{font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--cozi-muted);padding:10px 2px;border-top:1px solid var(--cozi-line);border-bottom:1px solid var(--cozi-line)}.month td{height:128px;vertical-align:top;border-bottom:1px solid var(--cozi-line);border-right:1px solid var(--cozi-line);padding:4px;overflow-wrap:anywhere}.month td:last-child{border-right:0}.month tr:last-child td{border-bottom:0}.day-number{font-size:12px;border-radius:50%;width:29px;height:29px;min-height:29px;padding:0;display:block;margin:0 0 4px auto}.today .day-number{background:var(--cozi-accent);color:var(--cozi-bg)}.outside{background:color-mix(in srgb,var(--cozi-text) 3%,transparent)}.outside .day-number{color:var(--cozi-muted)}.event{display:flex;text-align:left;border-left:3px solid var(--event-color);width:100%;border-radius:5px;line-height:1.35}.event:hover{background:color-mix(in srgb,var(--event-color) 13%,transparent)}.month-event{font-size:11px;padding:4px;min-height:0;gap:4px;margin-bottom:3px;background:color-mix(in srgb,var(--event-color) 7%,transparent);display:block}.month-event .event-time{font-size:10px;color:var(--cozi-muted);display:block}.event-body{min-width:0;display:block}.event-title{font-weight:600;display:block}.month-event .event-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.attendees{display:flex;gap:3px 8px;flex-wrap:wrap;margin-top:3px}.attendee{font-size:10px;display:inline-flex;align-items:center;gap:4px;color:var(--cozi-muted);font-weight:400}.month-event .attendees{gap:2px 5px}.all-day{background:color-mix(in srgb,var(--event-color) 16%,transparent)}.more{font-size:11px;min-height:22px;padding:3px 4px;color:var(--cozi-accent)}.agenda{padding:2px 22px 15px}.agenda-day{padding:12px 0}.agenda-day+section{border-top:1px solid var(--cozi-line)}.agenda-day h3{font-size:13px;margin-bottom:11px;color:var(--cozi-muted);font-weight:650}.agenda-day .today-heading{color:var(--cozi-accent)}.agenda-event{padding:10px;gap:12px;margin-bottom:7px}.agenda-event .event-time{font-size:12px;min-width:80px;padding-top:2px;color:var(--cozi-muted)}.agenda-event .event-title{font-size:14px}.agenda-event .attendee{font-size:11px}.notice{padding:25px;color:var(--cozi-muted);font-size:14px}.empty-day{font-size:12px;color:var(--cozi-muted)}footer{border-top:1px solid var(--cozi-line);padding:10px 23px;color:var(--cozi-muted);font-size:10px}dialog{color:var(--cozi-text);background:var(--cozi-bg);border:1px solid var(--cozi-line);border-radius:16px;padding:24px;width:min(480px,90vw);max-height:85vh;overflow:auto;box-shadow:0 15px 60px #0005}dialog::backdrop{background:#0006}.dialog-head{display:flex;justify-content:space-between;gap:16px;align-items:start}.dialog-head h2{font-size:21px}.dialog-head button{font-size:24px}dialog p{font-size:14px;line-height:1.55;margin:14px 0;overflow-wrap:anywhere}.description{white-space:pre-wrap}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}@container(max-width:600px){header{padding:18px 15px 14px}.toolbar{padding:0 12px 12px;gap:9px}.toolbar h3{font-size:15px;order:-1;flex-basis:100%}.filters{padding:0 14px 12px}.agenda{padding:0 14px 12px}.agenda-event .event-time{min-width:65px;font-size:11px}.month td{padding:2px;height:110px}.month-event .attendees{display:none}.month-event{font-size:10px}.month th{font-size:9px}}
+.hidden{display:none!important}
+:host(:fullscreen),:host(:-webkit-full-screen){background:var(--cozi-bg);overflow:auto}
+:host(.window-fill){position:fixed;inset:0;box-sizing:border-box;width:100vw;height:var(--cozi-window-height,100vh);padding:var(--cozi-safe-area,0px);z-index:1000;background:var(--cozi-bg);overflow:auto;container-type:normal}
+.tv{--tv-height:calc(var(--cozi-window-height,100vh) - 64px);border-radius:0;display:flex;flex-direction:column;min-height:var(--tv-height)}
+.tv.fortnight .toolbar{padding:8px 12px;gap:8px;flex-wrap:nowrap;flex-shrink:0}
+.tv .toolbar h3{font-size:clamp(16px,1.8vw,26px);order:0;flex-basis:auto;text-align:center;flex:1}
+.tv .view-controls{display:none}.tv-tools{display:flex;align-items:center;gap:4px}.tv-tools [data-action=fullscreen]{font-size:24px;line-height:1}
+.tv .filters{padding:0 12px 8px}.tv .month th{padding:5px 2px;font-size:12px}
+.tv.fortnight .month td{height:calc((var(--tv-height) - 90px)/2);padding:2px}
+.tv.fortnight .day-number{width:auto;border-radius:6px;padding:2px 6px;font-size:14px;height:26px;min-height:26px;margin-bottom:3px}
+.tv .month-event{font-size:var(--cozi-tv-font-size,13px);line-height:1.15;padding:2px 4px;margin-bottom:2px}
+.tv .event-meta{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-bottom:2px;min-width:0}.tv .event-meta .attendees{margin-top:0;min-width:0}.tv .event-meta .attendee{font-size:0;gap:0}.tv .event-meta .attendee i{width:7px;height:7px}.tv .month-event .event-time{font-size:max(9px,calc(var(--cozi-tv-font-size,13px) - 2px))}
+.tv .month-event .attendees{display:flex;gap:2px 5px;flex-wrap:nowrap;overflow:hidden}
+.tv .attendee{font-size:clamp(10px,1vw,14px);white-space:nowrap}
+.tv .more{font-size:13px;min-height:24px}.tv .agenda-event .event-title{font-size:18px}
+:host(.window-fill) .tv{--tv-height:calc(var(--cozi-window-height,100vh) - 2 * var(--cozi-safe-area,0px))}
+
 `;
 
 class CoziCalendarCardEditor extends Base {
@@ -379,9 +527,18 @@ class CoziCalendarCardEditor extends Base {
     this.shadowRoot.innerHTML=`<style>:host{display:block;color:var(--primary-text-color)}*{box-sizing:border-box}label{display:block;margin:12px 0;font:inherit;font-size:13px}input,select{display:block;width:100%;padding:10px;margin-top:5px;border-radius:6px;border:1px solid var(--divider-color,#ccc);background:var(--card-background-color,white);color:inherit;font:inherit}fieldset{border:1px solid var(--divider-color,#ccc);border-radius:8px;margin:14px 0;padding:10px}legend{font-size:13px}.member{display:grid;grid-template-columns:1fr 1fr 55px 36px;gap:8px;align-items:end}.member input{min-width:0}input[type=color]{padding:3px;height:40px}input[type=checkbox]{display:inline-block;width:auto}button{font:inherit;padding:8px;cursor:pointer;color:inherit;background:transparent;border:1px solid var(--divider-color,#ccc);border-radius:6px}p{font-size:12px;color:var(--secondary-text-color)}.member label{font-size:11px}</style>
       <label>Family calendar<select data-field="entity">${options.map((id)=>`<option value="${esc(id)}" ${c.entity===id?"selected":""}>${esc(id?calendars.find((s)=>s.entity_id===id)?.attributes?.friendly_name??id:"Choose a calendar")}</option>`).join("")}</select></label>
       <label>Title<input data-field="title" value="${esc(c.title??"Family calendar")}"></label>
-      <label>Starting view<select data-field="initial_view"><option value="month" ${c.initial_view!=="agenda"?"selected":""}>Month (agenda on narrow screens)</option><option value="agenda" ${c.initial_view==="agenda"?"selected":""}>Agenda</option></select></label>
+      <label>Display mode<select data-field="display_mode"><option value="standard" ${c.display_mode!=="tv"?"selected":""}>Standard</option><option value="tv" ${c.display_mode==="tv"?"selected":""}>TV (compact controls, larger events)</option></select></label>
+      <label>Starting view<select data-field="initial_view"><option value="month" ${c.initial_view==="month" || (!c.initial_view && c.display_mode!=="tv")?"selected":""}>Month (agenda on narrow screens)</option><option value="fortnight" ${c.initial_view==="fortnight" || (!c.initial_view && c.display_mode==="tv")?"selected":""}>Two weeks</option><option value="agenda" ${c.initial_view==="agenda"?"selected":""}>Agenda</option></select></label>
+      <label>Screen layout<select data-field="screen_mode"><option value="normal" ${c.screen_mode!=="fill"?"selected":""}>Normal dashboard</option><option value="fill" ${c.screen_mode==="fill"?"selected":""}>Fill browser window (TV single-card view)</option></select></label>
+      <label>TV automatic event rotation<select data-field="tv_auto_scroll">${[["off","Off"],["today","Today only"],["all","All overflowing days"]].map(([value,label])=>`<option value="${value}" ${(c.tv_auto_scroll??"off")===value?"selected":""}>${label}</option>`).join("")}</select></label>
+      <label>Seconds per event page<input type="number" min="5" max="300" data-field="tv_scroll_seconds" value="${esc(c.tv_scroll_seconds??12)}"></label>
+      <label>TV event text (CSS pixels)<input type="number" min="9" max="22" data-field="tv_font_size" value="${esc(c.tv_font_size??13)}"></label>
+      <label>TV safe margin (CSS pixels)<input type="number" min="0" max="64" data-field="tv_safe_area" value="${esc(c.tv_safe_area??(c.display_mode==="tv"?12:0))}"></label>
       <label>Agenda days<input type="number" min="1" max="90" data-field="days_to_show" value="${esc(c.days_to_show??7)}"></label>
       <fieldset><legend>People and colors</legend><p>Aliases are comma-separated. These names identify Cozi's attendee prefix.</p>${c.members.map((m,i)=>`<div class="member"><label>Name<input data-field="name" data-index="${i}" value="${esc(m.name)}"></label><label>Aliases<input data-field="aliases" data-index="${i}" value="${esc((m.aliases??[]).join(", "))}"></label><label>Color<input type="color" data-field="color" data-index="${i}" value="${esc(m.color)}"></label><button data-action="remove" data-index="${i}" aria-label="Remove ${esc(m.name)}">×</button></div>`).join("")}<button data-action="add">Add person</button></fieldset>
+      <label><input type="checkbox" data-field="show_header" ${(c.show_header ?? c.display_mode!=="tv")?"checked":""}> Show card title and calendar name</label>
+      <label><input type="checkbox" data-field="show_filters" ${(c.show_filters ?? c.display_mode!=="tv")?"checked":""}> Show attendee filters on load</label>
+      <label><input type="checkbox" data-field="show_footer" ${(c.show_footer ?? c.display_mode!=="tv")?"checked":""}> Show last-loaded time and time zone</label>
       <label><input type="checkbox" data-field="strip_prefix" ${c.strip_prefix!==false?"checked":""}> Remove recognized attendee prefixes from titles</label><label><input type="checkbox" data-field="show_attendees" ${c.show_attendees!==false?"checked":""}> Show attendee labels below titles</label>`;
   }
 }

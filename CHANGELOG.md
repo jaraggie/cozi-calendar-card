@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.0 — 2026-11-05
+
+- Optional TV display mode with adjustable event text, compact navigation, safe margins, and a two-week view.
+- Automatic paging of today's overflowing events or all overflowing days, with configurable dwell time, range counters, and interaction pauses. Existing cards default to off; the example TV launcher enables all-days rotation at 12-second intervals.
+- Configure title, initial attendee-filter visibility, footer, and fill-window layout in YAML or the visual editor.
+- Allowlisted URL presentation parameters let launcher scripts select TV settings without changing the shared dashboard configuration.
+- Fill-window layout covers HA navigation without requiring browser fullscreen permission. Exit it with the toolbar button.
+- Separate browser fullscreen control and a parameterized Android/Silk launcher example.
+- TV displays following Today roll to the current week during automatic refresh; manually browsed dates remain selected.
+
 ## 0.1.3 — 2026-11-04
 
 - Fix missing Marketplace README images with absolute URLs to pinned, published icon and screenshot assets. Relative image URLs were stripped by the HA Markdown sanitizer before Marketplace could resolve them.

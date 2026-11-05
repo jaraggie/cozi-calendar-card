@@ -1,0 +1,14 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Cozi TV layout checks</title>
+<style>body{font:14px system-ui;margin:16px;background:#ddd}iframe{border:0;display:block;width:960px;height:540px}button{padding:8px;margin:0 8px 12px 0}#result{padding:8px}</style>
+<button data-w="960" data-h="480">960 × 480 (toolbar visible)</button><button data-w="960" data-h="540">960 × 540</button><button data-w="1280" data-h="720">1280 × 720</button><button id="normal">Standard</button><div id="result" role="status">Loading</div><iframe title="Calendar preview" src="../demo.html?showcase&cozi_display=tv&cozi_view=fortnight&cozi_screen=fill&cozi_filters=0&cozi_font_size=11&cozi_max_events=4"></iframe>
+<script>
+const frame=document.querySelector('iframe'),result=document.querySelector('#result');
+function check(){const doc=frame.contentDocument,card=doc?.querySelector('cozi-calendar-card'),root=card?.shadowRoot,grid=root?.querySelector('.month');if(!grid)return;
+const cells=[...grid.querySelectorAll('td')],box=card.getBoundingClientRect(),table=grid.getBoundingClientRect(),vh=frame.contentWindow.innerHeight,vw=frame.contentWindow.innerWidth;
+const fit=box.left===0&&box.top===0&&Math.abs(box.width-vw)<2&&cells.length===14&&table.bottom+12<=vh+1&&card.scrollHeight<=card.clientHeight+1;
+result.textContent=`${fit?'PASS':'FAIL'}: ${vw} × ${vh}, ${cells.length} days, card starts ${Math.round(box.left)},${Math.round(box.top)}; grid bottom ${Math.round(table.bottom)} / ${vh}.`;
+}
+frame.onload=()=>{setInterval(check,500);};
+for(const b of document.querySelectorAll('[data-w]'))b.onclick=()=>{frame.style.width=b.dataset.w+'px';frame.style.height=b.dataset.h+'px';};
+document.querySelector('#normal').onclick=()=>{frame.src='../demo.html?showcase';};
+</script></html>

@@ -95,9 +95,18 @@ The visual editor handles the entity, title, starting view, agenda range, member
 | `entity` | Empty | Combined family `calendar.*` entity |
 | `title` | Family calendar | Card heading |
 | `members` | Empty list | List of `name`, six-digit hex `color`, and optional `aliases` list |
-| `initial_view` | `month` | `month` or `agenda`; narrow cards start in agenda |
+| `initial_view` | `month` (`fortnight` in TV mode) | `month`, `fortnight`, or `agenda`; standard narrow cards start in agenda |
+| `display_mode` | `standard` | `standard` or `tv`; TV uses larger events and compact controls |
+| `tv_auto_scroll` | `"off"` | Rotate overflow pages in TV grids: `"off"`, `today`, or `all` |
+| `tv_scroll_seconds` | `12` | Seconds per event page, 5–300 |
+| `tv_font_size` | `13` | TV event title size, 9–22 CSS pixels |
+| `tv_safe_area` | `12` in TV mode | Window-fill safe margin, 0–64 CSS pixels |
+| `screen_mode` | `normal` | `normal` or `fill`; fill covers the browser content area in a single-card dashboard |
+| `show_header` | `true` (`false` in TV mode) | Show the card title and calendar name |
+| `show_filters` | `true` (`false` in TV mode) | Show attendee filters initially; People can reveal them |
+| `show_footer` | `true` (`false` in TV mode) | Show loaded time and time zone |
 | `days_to_show` | `7` | Agenda range, 1–90 days |
-| `max_events_per_day` | `4` | Month entries before “more,” 1–20; tap a date or “more” for its agenda |
+| `max_events_per_day` | `4` (`3` in TV mode) | Grid entries before “more,” 1–20; tap a date or “more” for its agenda |
 | `start_of_week` | `0` | Sunday = 0, Monday = 1, through Saturday = 6 |
 | `strip_prefix` | `true` | Remove recognized attendee prefixes from displayed titles |
 | `show_attendees` | `true` | Show participant names and colored dots |
@@ -115,6 +124,54 @@ All colors use `#RRGGBB`. Names and aliases must be unique; All, Family, and Eve
 Recognized name separators are slash, comma, ampersand, and `and`. An unknown prefix such as `Project: Launch` stays intact. If a shared prefix contains both a configured member and an unconfigured person, the unknown name is retained with a neutral color. An entirely unknown person's single-name prefix remains in the title until that person is configured.
 
 Shared events use the shared border color and each attendee's own label color. Identical duplicate API entries are collapsed conservatively; separately identified appointments are kept.
+
+### TV display and launcher scripts
+
+Use a single-card Panel view and add these options to the existing calendar card (keep your entity and members):
+
+```yaml
+display_mode: tv
+initial_view: fortnight
+screen_mode: fill
+show_header: false
+show_filters: false
+show_footer: false
+max_events_per_day: 4
+tv_font_size: 11
+tv_safe_area: 12
+tv_auto_scroll: today
+tv_scroll_seconds: 12
+```
+
+A launcher can override presentation per browser without editing the shared dashboard:
+
+```text
+/lovelace/family?cozi_display=tv&cozi_view=fortnight&cozi_screen=fill&cozi_header=0&cozi_filters=0&cozi_footer=0&cozi_max_events=4&cozi_font_size=11&cozi_safe_area=12&cozi_scroll=today&cozi_scroll_seconds=12
+```
+
+| URL parameter | Allowed values | YAML option |
+| --- | --- | --- |
+| `cozi_display` | `standard`, `tv` | `display_mode` |
+| `cozi_view` | `month`, `fortnight`, `agenda` | `initial_view` |
+| `cozi_screen` | `normal`, `fill` | `screen_mode` |
+| `cozi_header` | `0`, `1` | `show_header` |
+| `cozi_filters` | `0`, `1` | `show_filters` |
+| `cozi_footer` | `0`, `1` | `show_footer` |
+| `cozi_scroll` | `off`, `today`, `all` | `tv_auto_scroll` |
+| `cozi_scroll_seconds` | `5`–`300` | `tv_scroll_seconds` |
+| `cozi_font_size` | `9`–`22` | `tv_font_size` |
+| `cozi_safe_area` | `0`–`64` | `tv_safe_area` |
+| `cozi_max_events` | `1`–`20` | `max_events_per_day` |
+
+URL values take precedence on card creation; invalid values are ignored. Entity, members, and credentials cannot be changed through these parameters. Use a full URL in an Android VIEW intent, enclose it in single quotes so `&` stays inside the URL, and restrict the intent to the installed browser. A parameterized example is in [TV launcher configuration](https://github.com/jaraggie/cozi-calendar-card/blob/main/docs/TV_LAUNCHER.md).
+
+Fill mode covers Home Assistant's navigation. The separate Browser fullscreen button requests native fullscreen and requires a click or key gesture; the example ADB launcher can activate this control after loading. Its selector finds the named control rather than assuming screen coordinates. Browser support varies. The fill-window button exits fill mode; browser Back/Escape exits native fullscreen. The safe margin accommodates TV overscan. TV mode follows the current week on automatic refresh until you navigate to another date; Today resumes following the current date. TV grid events use colored attendee dots beside the time; names remain in the accessible event label and event details. People reveals the name/color legend and filters. Event details and People filters remain available. Large event limits, visible headers/filters, or an unusually short viewport can require scrolling.
+
+### Automatic TV event rotation
+
+`tv_auto_scroll: today` advances only today's overflowing list in groups of `max_events_per_day`; `all` advances every overflowing day. A counter such as `↻ 5–6 / 6` identifies the visible range, then loops back to the first page. All-day and shared appointments participate normally. Other days retain the interactive “+ more” behavior in today-only mode.
+
+The grid stays still, and only event lists change. The timer does not fetch calendar data. Opening event details or People, focusing a day/event, or hiding the browser tab pauses rotation. Other interaction pauses it for 30 seconds. Filters, date navigation, and changed event lists reset to the first page; an unchanged calendar refresh retains progress. Agenda view already displays all events and does not rotate. Quote `"off"` in YAML to disable rotation. Existing cards default to off; the TV launcher example defaults to all overflowing days at 12-second intervals.
 
 ### Refresh behavior
 

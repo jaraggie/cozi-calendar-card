@@ -28,3 +28,14 @@ Branding update: option A (Forest Calendar) is the selected project icon, promot
 UI access recovered after the earlier `cgWindowNotFound` errors. Marketplace accepted the public repository through Add from link. The user subsequently confirmed installation of 0.1.1, receipt of an upgrade notification, successful upgrade to 0.1.3, and removal of the old manual resource from Resources. This completes the user-run installation/upgrade task; the agent did not independently inspect the final resource list.
 
 Marketplace image display is verified: v0.1.3 uses absolute pinned image URLs because the HA Markdown sanitizer stripped relative sources. After Refresh information, the live repository page displays the project icon and both screenshots. Hosted CI/HACS validation and release checks pass; downloaded assets match the tag. Repository-page rendering was directly verified; installation and upgrade success were subsequently reported by the user. R8 is complete based on the user-confirmed upgrade path and removal of the old manual resource.
+
+
+## TV presentation candidate 0.2.0
+
+- [x] Optional TV presentation, two-week grid, configurable title/filter/footer, fill-window mode, text size, and safe margin.
+- [x] Allowlisted URL overrides and a parameterized Android/Silk launcher example.
+- [x] Syntax, 29 automated tests, package/privacy checks, browser layout checks, and live-timer overflow rotation checks.
+- [x] Local HA candidate install and script-driven native fullscreen verified on a physical Fire TV; user approved 11px text and four events per day.
+- [ ] Publish the candidate through the release workflow and migrate the test resource back to the Marketplace-managed URL after upgrade. This candidate has not been published.
+
+- [x] Automatic overflow paging with today/all/off scope and configurable interval; user selected all overflowing days every 12 seconds. Browser fixture tests and physical-TV later-page evidence recorded in VALIDATION.md.
