@@ -1,6 +1,8 @@
 # Community announcement
 
-Status: submitted on 2026-11-05 after the project owner reviewed the draft and explicitly approved Create Topic. The signed-in account's [Pending queue](https://community.home-assistant.io/u/jaraggie/activity/pending) shows exactly one submitted announcement with the title below, its body, and both fictional screenshots. Forum moderation is pending; no public topic URL is available yet. Do not submit a duplicate while this item is queued.
+Status: approved and published on 2026-11-05. [Public announcement](https://community.home-assistant.io/t/cozi-family-calendar-card-one-family-feed-with-attendee-colors-and-shared-events/1032624). The owner confirmed approval, and the agent verified the topic title, author, and Dashboards & Frontend category on the published page.
+
+The submitted text below is preserved as posted. It described 0.2.0 as a beta at submission time; the same validated release was subsequently promoted to a regular release to address catalog maintainer feedback. Its tag and downloadable assets were unchanged.
 
 Submitted category: Home Assistant Community → Share your Projects → [Dashboards & Frontend](https://community.home-assistant.io/c/projects/frontend/34).
 

@@ -124,3 +124,11 @@ No new user visual approval was requested for this unchanged candidate layout; t
 The owner signed in to Home Assistant Community, reviewed the completed announcement, and explicitly approved Create Topic. After submission, the composer closed and the account's Pending (1) queue showed the announcement title, complete body, and both fictional screenshots. It is submitted for forum moderation, not yet verified publicly visible; no public topic URL is available. The exact submitted text and status are in `docs/COMMUNITY_ANNOUNCEMENT.md`. Do not create a duplicate.
 
 The catalog request is submitted separately as [hacs/default #13407](https://github.com/hacs/default/pull/13407). Neither forum submission nor the catalog request establishes approval by its maintainers.
+
+## Forum approval and regular-release promotion — 2026-11-05
+
+The owner confirmed forum moderation approval. Direct browser inspection verified the [public announcement](https://community.home-assistant.io/t/cozi-family-calendar-card-one-family-feed-with-attendee-colors-and-shared-events/1032624), its title, author, and Dashboards & Frontend category. The original posted text is preserved in the announcement record.
+
+Catalog maintainer Frenck requested a full release because default-store users do not normally see prereleases. With explicit owner approval, promoted v0.2.0 to a regular latest release and removed beta wording from its title/notes and the current README's installation guidance. GitHub's `/releases/latest` endpoint returns v0.2.0 with `draft: false` and `prerelease: false`.
+
+Before promotion, downloaded all release assets again: checksums, standalone JavaScript, ZIP integrity, and all 37 archived files match the existing v0.2.0 tag. After promotion, all asset IDs, names, SHA-256 digests, and sizes still match the pre-promotion snapshot. The tag and deployed code are unchanged. Existing automated, managed-upgrade, and Fire TV evidence applies; no additional phone or endurance test is claimed.

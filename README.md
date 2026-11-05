@@ -39,7 +39,7 @@ Keep the subscription URL private. Enter it only in the calendar integration, ne
 
 Install this project as a custom Dashboard repository. Default-catalog acceptance is a separate process; this README does not imply it has happened.
 
-The initial community release is a beta. Enable pre-releases for this repository if the beta version is not offered. On Home Assistant versions with the built-in **Marketplace**, open **Settings → Marketplace → Add from link**, enter the repository URL below, and follow the prompts. Older installations use HACS as described below.
+Version 0.2.0 is a regular release; enabling pre-releases is not required. On Home Assistant versions with the built-in **Marketplace**, open **Settings → Marketplace → Add from link**, enter the repository URL below, and follow the prompts. Older installations use HACS as described below.
 
 [Open this repository in HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=jaraggie&repository=cozi-calendar-card&category=plugin) · [GitHub releases](https://github.com/jaraggie/cozi-calendar-card/releases)
 
