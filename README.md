@@ -12,7 +12,8 @@ This is an original community project, unaffiliated with Cozi or Home Assistant.
 
 ## Features
 
-- Month and agenda views, with automatic agenda view on narrow cards.
+- Month, two-week, and agenda views, with automatic agenda view on narrow standard cards.
+- Optional TV presentation with automatic overflow paging and script-controlled layout.
 - Configurable people, colors, and aliases: `Alex/Jordan: Library visit` becomes `Library visit` with two colored attendee labels.
 - Family-wide events: `All: Family dinner` becomes `Family dinner` with a Family label.
 - Person filters that retain shared appointments and family-wide events.
@@ -54,11 +55,11 @@ These steps follow [HACS custom repository instructions](https://hacs.dev/docs/f
 
 1. Download `cozi-calendar-card.js` from a release and copy it to `/config/www/cozi-calendar-card.js`. Create `www` if needed. Only this JavaScript file is required on HA.
 2. Open your dashboard's **Resources** settings (enable Advanced Mode in your HA profile if needed).
-3. Add `/local/cozi-calendar-card.js?v=0.1.3` as a **JavaScript module**. For YAML-managed resources, use:
+3. Add `/local/cozi-calendar-card.js?v=0.2.0` as a **JavaScript module**. For YAML-managed resources, use:
 
    ```yaml
    resources:
-     - url: /local/cozi-calendar-card.js?v=0.1.3
+     - url: /local/cozi-calendar-card.js?v=0.2.0
        type: module
    ```
 

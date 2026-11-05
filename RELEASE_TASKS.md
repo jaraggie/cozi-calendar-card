@@ -21,7 +21,7 @@ Target: a generic, independently maintained Cozi Family Calendar Card, ready for
 
 Local preparation does not establish a successful hosted HACS validation, HACS installation, publication, or catalog acceptance. Update each task only after its corresponding evidence exists.
 
-Published beta: **0.1.3** ([Marketplace image fix](https://github.com/jaraggie/cozi-calendar-card/releases/tag/v0.1.3)). See `VALIDATION.md` for evidence and `CONTRIBUTING.md` for the draft-release process. The user has confirmed successful installation, upgrade **0.1.1 → 0.1.3**, and removal of the old manual resource. Announcement and catalog submission remain open.
+Published beta: **0.2.0** ([TV presentation and event rotation](https://github.com/jaraggie/cozi-calendar-card/releases/tag/v0.2.0)). See `VALIDATION.md` for evidence and `CONTRIBUTING.md` for the draft-release process. The earlier user-confirmed upgrade path was **0.1.1 → 0.1.3**. Announcement and catalog submission remain open.
 
 Branding update: option A (Forest Calendar) is the selected project icon, promoted from prototype commit `8fbd376`. Published version **0.1.2** packages its SVG/PNG assets and README branding for GitHub and HACS repository details. GitHub’s custom social preview is saved. Hosted CI/HACS validation and the tag-specific release workflow passed; downloaded release checksums and all 32 archive files match the tag. Current HACS/Marketplace browse lists use a generic Dashboard category symbol; see `assets/README.md` for the verified source limitation.
 
@@ -30,12 +30,13 @@ UI access recovered after the earlier `cgWindowNotFound` errors. Marketplace acc
 Marketplace image display is verified: v0.1.3 uses absolute pinned image URLs because the HA Markdown sanitizer stripped relative sources. After Refresh information, the live repository page displays the project icon and both screenshots. Hosted CI/HACS validation and release checks pass; downloaded assets match the tag. Repository-page rendering was directly verified; installation and upgrade success were subsequently reported by the user. R8 is complete based on the user-confirmed upgrade path and removal of the old manual resource.
 
 
-## TV presentation candidate 0.2.0
+## TV presentation release 0.2.0
 
 - [x] Optional TV presentation, two-week grid, configurable title/filter/footer, fill-window mode, text size, and safe margin.
 - [x] Allowlisted URL overrides and a parameterized Android/Silk launcher example.
 - [x] Syntax, 29 automated tests, package/privacy checks, browser layout checks, and live-timer overflow rotation checks.
 - [x] Local HA candidate install and script-driven native fullscreen verified on a physical Fire TV; user approved 11px text and four events per day.
-- [ ] Publish the candidate through the release workflow and migrate the test resource back to the Marketplace-managed URL after upgrade. This candidate has not been published.
+- [x] Publish the candidate through the tag-specific draft release workflow; verify downloaded assets before publishing the beta. [CI/HACS](https://github.com/jaraggie/cozi-calendar-card/actions/runs/42026972788) and [release workflow](https://github.com/jaraggie/cozi-calendar-card/actions/runs/42027109404) passed. All 37 ZIP files and the standalone JavaScript match the tag.
+- [x] Upgrade through Marketplace to v0.2.0 and remove the temporary candidate resource entry. The Resources page now contains one managed JavaScript module; the served source reports 0.2.0. Relaunched the physical Fire TV and verified fullscreen, grid bounds, and first/later event pages across all four overflowing days. See `VALIDATION.md` for build versions and limits.
 
 - [x] Automatic overflow paging with today/all/off scope and configurable interval; user selected all overflowing days every 12 seconds. Browser fixture tests and physical-TV later-page evidence recorded in VALIDATION.md.
